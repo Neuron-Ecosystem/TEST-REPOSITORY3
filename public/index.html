@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Momentum Mosaic - Digital Sculpture of Humanity's Collective State" />
+    <title>MOMENTUM MOSAIC — Мозаика Момента</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+                sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background: #000;
+        }
+        
+        #root {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        ::selection {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <!-- Firebase SDK -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-analytics.js";
+      import { getAuth } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+      import { getFirestore } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyDOaDVzzPjyYm4HWMND2XYWjLy_h4wty5s",
+        authDomain: "neuron-ecosystem-2025.firebaseapp.com",
+        projectId: "neuron-ecosystem-2025",
+        storageBucket: "neuron-ecosystem-2025.firebasestorage.app",
+        messagingSenderId: "589834476565",
+        appId: "1:589834476565:web:0b28faca1064077add421c",
+        measurementId: "G-4D19EM80B0"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+      
+      window.firebase = { app, auth, db, analytics };
+    </script>
+</body>
+</html>
