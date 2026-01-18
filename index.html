@@ -3,105 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEURON | Terminal OS</title>
+    <title>Neuron Ecosystem</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --neon: #00ff41; /* Цвет классической матрицы */
-            --bg: #050505;
-            --card: #0a0a0a;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: var(--bg);
-            color: var(--neon);
-            font-family: 'Courier New', monospace;
-            padding: 20px;
-            line-height: 1.2;
+            background: #000;
+            color: #fff;
+            font-family: 'Inter', -apple-system, sans-serif;
+            display: flex; align-items: center; justify-content: center;
+            min-height: 100vh; padding: 20px;
         }
-        .scanline {
-            width: 100%; height: 100px;
-            background: linear-gradient(0deg, rgba(0,255,65,0.05) 0%, transparent 100%);
-            position: fixed; top: 0; left: 0; pointer-events: none;
-            animation: scan 4s linear infinite;
-        }
-        .container { max-width: 1000px; margin: 0 auto; }
-        header { border-bottom: 2px solid var(--neon); padding-bottom: 10px; margin-bottom: 30px; }
-        .grid {
+        .bento-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(3, 180px);
             gap: 20px;
+            max-width: 1100px; width: 100%;
         }
-        .node-card {
-            border: 1px solid var(--neon);
-            padding: 15px;
-            transition: 0.3s;
-            text-decoration: none;
-            color: inherit;
-            position: relative;
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 24px;
+            backdrop-filter: blur(10px);
+            transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            text-decoration: none; color: white;
+            display: flex; flex-direction: column; justify-content: flex-end;
         }
-        .node-card:hover {
-            background: var(--neon);
-            color: black;
-            box-shadow: 0 0 20px var(--neon);
+        .card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #6366f1;
+            transform: scale(1.02);
         }
-        .node-card h3::before { content: "> "; }
-        .status-bar {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            background: var(--neon); color: black;
-            padding: 5px 20px; font-weight: bold; font-size: 12px;
-            display: flex; justify-content: space-between;
-        }
-        @keyframes scan { 0% { top: -100px; } 100% { top: 100%; } }
-        .glitch { animation: glitch 1s linear infinite; }
-        @keyframes glitch {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
+        .card i { font-size: 2rem; margin-bottom: auto; color: #6366f1; }
+        .card h3 { font-size: 1.2rem; margin-bottom: 4px; }
+        .card p { font-size: 0.85rem; color: #aaa; }
+
+        /* Размеры карточек */
+        .large { grid-column: span 2; grid-row: span 2; background: linear-gradient(45deg, rgba(99,102,241,0.1), transparent); }
+        .wide { grid-column: span 2; }
+        .tall { grid-row: span 2; }
+
+        @media (max-width: 768px) {
+            .bento-grid { display: flex; flex-direction: column; }
+            .card { min-height: 150px; }
         }
     </style>
 </head>
 <body>
-    <div class="scanline"></div>
-    <div class="container">
-        <header>
-            <h1 class="glitch">NEURON_ECOSYSTEM_v2.0.26</h1>
-            <p>Welcome, Architect. All systems operational.</p>
-        </header>
+    <div class="bento-grid">
+        <a href="https://neurondigital.tilda.ws" class="card large">
+            <i class="fas fa-palette"></i>
+            <h3>Digital Studio</h3>
+            <p>Брендинг и разработка сложных SaaS-решений для бизнеса.</p>
+        </a>
 
-        <div class="grid">
-            <a href="https://synapse.neuron-p2p.ru" class="node-card">
-                <h3>SYNAPSE_P2P</h3>
-                <p>Encrypted communication node.</p>
-            </a>
-            <a href="notes.html" class="node-card">
-                <h3>NEURON_NOTES</h3>
-                <p>Local data storage & synchronization.</p>
-            </a>
-            <a href="https://neuron-ai-eta.vercel.app/" class="node-card">
-                <h3>AI_CORE</h3>
-                <p>Neural network integration hub.</p>
-            </a>
-            <a href="https://budget.neuron-p2p.ru" class="node-card">
-                <h3>FINANCE_LOG</h3>
-                <p>Budget tracking and goals.</p>
-            </a>
-        </div>
+        <a href="https://neuron-ai-eta.vercel.app/" class="card wide">
+            <i class="fas fa-brain"></i>
+            <h3>Neuron AI</h3>
+            <p>Интеллектуальное ядро системы.</p>
+        </a>
 
-        <div style="margin-top: 50px; border-top: 1px solid var(--neon); padding-top: 20px;">
-            <p>System Logs:</p>
-            <p style="opacity: 0.6;">[18:42] Syncing with Gun.js mesh...</p>
-            <p style="opacity: 0.6;">[18:42] Encrypting local storage...</p>
-            <p style="opacity: 0.6;">[18:43] Ready.</p>
-        </div>
-    </div>
+        <a href="https://synapse.neuron-p2p.ru" class="card">
+            <i class="fas fa-comments"></i>
+            <h3>Synapse</h3>
+            <p>P2P Chat.</p>
+        </a>
 
-    <div class="status-bar">
-        <span>STATUS: ONLINE</span>
-        <span>USER: ARCHITECT</span>
-        <span>NETWORK: ENCRYPTED</span>
+        <a href="notes.html" class="card tall">
+            <i class="fas fa-sticky-note"></i>
+            <h3>Notes</h3>
+            <p>Твои мысли под полным контролем.</p>
+        </a>
+
+        <a href="https://converter.neuron-p2p.ru" class="card">
+            <i class="fas fa-exchange-alt"></i>
+            <h3>Converter</h3>
+        </a>
+
+        <a href="https://budget.neuron-p2p.ru" class="card wide">
+            <i class="fas fa-wallet"></i>
+            <h3>Budget Tracker</h3>
+            <p>Финансовая аналитика 2026.</p>
+        </a>
     </div>
 </body>
 </html>
