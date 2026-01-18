@@ -3,89 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>What If — Лаборатория альтернативной реальности</title>
-    <meta name="description" content="Интеллектуальный симулятор альтернативных миров. Что было бы, если...?">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>NEURON | Terminal OS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌌</text></svg>">
+    <style>
+        :root {
+            --neon: #00ff41; /* Цвет классической матрицы */
+            --bg: #050505;
+            --card: #0a0a0a;
+        }
+        body {
+            background: var(--bg);
+            color: var(--neon);
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            line-height: 1.2;
+        }
+        .scanline {
+            width: 100%; height: 100px;
+            background: linear-gradient(0deg, rgba(0,255,65,0.05) 0%, transparent 100%);
+            position: fixed; top: 0; left: 0; pointer-events: none;
+            animation: scan 4s linear infinite;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        header { border-bottom: 2px solid var(--neon); padding-bottom: 10px; margin-bottom: 30px; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .node-card {
+            border: 1px solid var(--neon);
+            padding: 15px;
+            transition: 0.3s;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+        }
+        .node-card:hover {
+            background: var(--neon);
+            color: black;
+            box-shadow: 0 0 20px var(--neon);
+        }
+        .node-card h3::before { content: "> "; }
+        .status-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: var(--neon); color: black;
+            padding: 5px 20px; font-weight: bold; font-size: 12px;
+            display: flex; justify-content: space-between;
+        }
+        @keyframes scan { 0% { top: -100px; } 100% { top: 100%; } }
+        .glitch { animation: glitch 1s linear infinite; }
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+    </style>
 </head>
 <body>
-    <div class="app-background"></div>
-    
+    <div class="scanline"></div>
     <div class="container">
-        <header class="header">
-            <div class="logo-container">
-                <div class="logo">What If</div>
-                <div class="tagline">Симулятор реальностей</div>
-            </div>
-            
-            <div class="header-controls">
-                <button id="dailyScenarioBtn" class="icon-btn" title="Сценарий дня">
-                    <i class="fas fa-star"></i>
-                </button>
-                <button id="themeToggle" class="icon-btn" title="Тема">
-                    <i class="fas fa-moon"></i>
-                </button>
-            </div>
+        <header>
+            <h1 class="glitch">NEURON_ECOSYSTEM_v2.0.26</h1>
+            <p>Welcome, Architect. All systems operational.</p>
         </header>
 
-        <nav class="categories-nav">
-            <button class="category-pill active" data-category="all">Все</button>
-            <button class="category-pill" data-category="tech">Технологии</button>
-            <button class="category-pill" data-category="society">Общество</button>
-            <button class="category-pill" data-category="nature">Природа</button>
-            <button class="category-pill" data-category="human">Человек</button>
-        </nav>
+        <div class="grid">
+            <a href="https://synapse.neuron-p2p.ru" class="node-card">
+                <h3>SYNAPSE_P2P</h3>
+                <p>Encrypted communication node.</p>
+            </a>
+            <a href="notes.html" class="node-card">
+                <h3>NEURON_NOTES</h3>
+                <p>Local data storage & synchronization.</p>
+            </a>
+            <a href="https://neuron-ai-eta.vercel.app/" class="node-card">
+                <h3>AI_CORE</h3>
+                <p>Neural network integration hub.</p>
+            </a>
+            <a href="https://budget.neuron-p2p.ru" class="node-card">
+                <h3>FINANCE_LOG</h3>
+                <p>Budget tracking and goals.</p>
+            </a>
+        </div>
 
-        <main class="scenario-container">
-            <div class="scenario-card" id="scenarioCard">
-                <div class="loading-state">
-                    <div class="loading-pulse"></div>
-                    <p>Генерация реальности...</p>
-                </div>
-            </div>
-
-            <div class="controls-wrapper">
-                <div class="meta-info">
-                    <span id="scenarioCategory" class="meta-tag">Загрузка...</span>
-                    <span id="readingTime" class="meta-tag"><i class="far fa-clock"></i> ~40 сек</span>
-                </div>
-
-                <div class="nav-buttons">
-                    <button class="btn-secondary" id="prevScenarioBtn">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    
-                    <button class="btn-share" id="shareBtn">
-                        <i class="fas fa-share-alt"></i>
-                        <span>Поделиться миром</span>
-                    </button>
-
-                    <button class="btn-primary" id="nextScenarioBtn">
-                        <span>Дальше</span>
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
-        </main>
-
-        <footer class="footer">
-            <div class="footer-links">
-                <a href="https://t.me/neuron_p2p" target="_blank" class="footer-link">Предложить сценарий</a>
-                <span class="separator">•</span>
-                <a href="https://neuron-p2p.ru" id="subscribeBtn" class="footer-link">Подписаться</a>
-            </div>
-            <p class="credit">Neuron Ecosystem © 2025</p>
-        </footer>
+        <div style="margin-top: 50px; border-top: 1px solid var(--neon); padding-top: 20px;">
+            <p>System Logs:</p>
+            <p style="opacity: 0.6;">[18:42] Syncing with Gun.js mesh...</p>
+            <p style="opacity: 0.6;">[18:42] Encrypting local storage...</p>
+            <p style="opacity: 0.6;">[18:43] Ready.</p>
+        </div>
     </div>
 
-    <div id="toast" class="toast">Ссылка скопирована</div>
-
-    <script src="app.js"></script>
+    <div class="status-bar">
+        <span>STATUS: ONLINE</span>
+        <span>USER: ARCHITECT</span>
+        <span>NETWORK: ENCRYPTED</span>
+    </div>
 </body>
 </html>
