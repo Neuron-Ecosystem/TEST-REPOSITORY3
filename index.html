@@ -13,6 +13,7 @@
             --glass: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.1);
             --text: #e6edf3;
+            --text-dim: #a0a0c0;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -25,170 +26,184 @@
             min-height: 100vh;
         }
 
-        /* Живой фон с частицами и линиями */
         #canvas {
             position: fixed;
             top: 0;
             left: 0;
             z-index: -1;
-            filter: blur(1px);
+            filter: blur(0.5px);
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 40px 20px;
-            position: relative;
         }
 
-        /* Навигационная панель */
-        .nav-ui {
+        /* UI Header */
+        .header-ui {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 60px;
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            border-radius: 20px;
+            margin-bottom: 50px;
+            backdrop-filter: blur(15px);
+            padding: 20px 30px;
+            border-radius: 24px;
             border: 1px solid var(--glass-border);
             background: var(--glass);
+            animation: fadeInDown 0.8s ease;
         }
 
-        .logo { font-size: 1.8rem; font-weight: bold; letter-spacing: 4px; color: var(--accent); }
+        .logo-box { display: flex; align-items: center; gap: 15px; }
+        .logo-text { font-size: 1.5rem; font-weight: 800; letter-spacing: 5px; color: var(--accent); text-transform: uppercase; }
 
         .search-trigger {
-            background: rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.4);
             border: 1px solid var(--glass-border);
-            padding: 10px 20px;
-            border-radius: 12px;
-            color: #888;
+            padding: 12px 24px;
+            border-radius: 14px;
+            color: var(--text-dim);
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
+            transition: 0.3s;
         }
+        .search-trigger:hover { border-color: var(--accent); }
+        kbd { background: #222; padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; border: 1px solid #444; }
 
-        kbd {
-            background: #333;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            color: #fff;
-        }
-
-        /* Сетка Bento в стиле Neural Mesh */
+        /* Grid System */
         .services-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
+            gap: 20px;
         }
 
         .node-card {
             background: var(--glass);
-            backdrop-filter: blur(15px);
+            backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
             border-radius: 24px;
-            padding: 30px;
+            padding: 25px;
             text-decoration: none;
             color: inherit;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
             position: relative;
-            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            animation: fadeInUp 0.6s ease backwards;
         }
 
         .node-card:hover {
             border-color: var(--accent);
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px var(--accent-glow);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(255, 140, 0, 0.15);
+            background: rgba(255, 140, 0, 0.02);
         }
 
-        .icon-box {
-            font-size: 2.5rem;
+        .node-icon {
+            font-size: 2rem;
             color: var(--accent);
             margin-bottom: 20px;
-            transition: 0.3s;
+            height: 50px;
+            display: flex;
+            align-items: center;
         }
 
-        .node-card:hover .icon-box { transform: scale(1.1); text-shadow: 0 0 20px var(--accent); }
+        .node-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 10px; }
+        .node-desc { font-size: 0.9rem; color: var(--text-dim); line-height: 1.5; flex-grow: 1; }
 
-        .node-title { font-size: 1.4rem; margin-bottom: 10px; font-weight: 600; }
-        .node-desc { font-size: 0.9rem; opacity: 0.6; line-height: 1.5; }
-
-        /* Специальный статус для Neuron Status */
-        .status-dot {
-            width: 10px;
-            height: 10px;
+        /* Status Integration */
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-top: 15px;
+            color: #00ff88;
+            text-transform: uppercase;
+        }
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: #00ff88;
             border-radius: 50%;
-            display: inline-block;
-            margin-right: 8px;
-            position: relative;
-        }
-        .dot-online { 
-            background: #00ff88; 
             box-shadow: 0 0 10px #00ff88;
-            animation: pulse-green 2s infinite; 
-        }
-        .dot-checking { background: #58a6ff; }
-        
-        @keyframes pulse-green {
-            0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); }
+            animation: pulse 2s infinite;
         }
 
-        /* Модальное окно поиска */
+        /* Search Modal */
         #search-modal {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
+            background: rgba(5, 5, 10, 0.95);
             display: none;
             justify-content: center;
-            align-items: flex-start;
-            padding-top: 100px;
-            z-index: 100;
+            padding-top: 10vh;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
         }
-        .search-box {
-            width: 90%;
-            max-width: 600px;
-            background: #1a1b2e;
-            padding: 20px;
-            border-radius: 20px;
-            border: 1px solid var(--accent);
-        }
-        .search-box input {
+        .search-container { width: 90%; max-width: 600px; }
+        .search-input {
             width: 100%;
-            background: transparent;
-            border: none;
+            background: var(--glass);
+            border: 1px solid var(--accent);
+            padding: 20px;
+            border-radius: 18px;
             color: #fff;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             outline: none;
+            box-shadow: 0 0 30px var(--accent-glow);
         }
 
-        /* Голосовой поиск иконка */
+        /* Voice Button */
         .mic-btn {
             position: fixed;
-            bottom: 40px;
-            right: 40px;
-            width: 60px;
-            height: 60px;
+            bottom: 30px;
+            right: 30px;
+            width: 65px;
+            height: 65px;
             background: var(--accent);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            box-shadow: 0 0 20px var(--accent-glow);
-            z-index: 99;
+            box-shadow: 0 10px 30px var(--accent-glow);
+            z-index: 100;
             transition: 0.3s;
+            color: #000;
+            font-size: 1.5rem;
         }
-        .mic-btn:hover { transform: scale(1.1); }
-        .mic-active { animation: pulse-red 1s infinite; background: #ff4444; }
+        .mic-btn.active { background: #ff4444; animation: micPulse 1s infinite; }
 
-        @keyframes pulse-red {
-            0% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7); }
-            100% { box-shadow: 0 0 0 20px rgba(255, 68, 68, 0); }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        @keyframes micPulse { 0% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7); } 100% { box-shadow: 0 0 0 20px rgba(255, 68, 68, 0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Animation Delays */
+        .node-card:nth-child(1) { animation-delay: 0.1s; }
+        .node-card:nth-child(2) { animation-delay: 0.15s; }
+        .node-card:nth-child(3) { animation-delay: 0.2s; }
+        .node-card:nth-child(4) { animation-delay: 0.25s; }
+        .node-card:nth-child(5) { animation-delay: 0.3s; }
+        .node-card:nth-child(6) { animation-delay: 0.35s; }
+        .node-card:nth-child(7) { animation-delay: 0.4s; }
+        .node-card:nth-child(8) { animation-delay: 0.45s; }
+        .node-card:nth-child(9) { animation-delay: 0.5s; }
+        .node-card:nth-child(10) { animation-delay: 0.55s; }
+        .node-card:nth-child(11) { animation-delay: 0.6s; }
+        .node-card:nth-child(12) { animation-delay: 0.65s; }
+        .node-card:nth-child(13) { animation-delay: 0.7s; }
+        .node-card:nth-child(14) { animation-delay: 0.75s; }
+
+        @media (max-width: 768px) {
+            .header-ui { flex-direction: column; gap: 20px; text-align: center; }
+            .search-trigger { width: 100%; justify-content: center; }
+            .mic-btn { width: 55px; height: 55px; bottom: 20px; right: 20px; }
         }
-
     </style>
 </head>
 <body>
@@ -196,61 +211,126 @@
 <canvas id="canvas"></canvas>
 
 <div class="container">
-    <nav class="nav-ui">
-        <div class="logo">NEURON</div>
+    <header class="header-ui">
+        <div class="logo-box">
+            <i class="fas fa-brain" style="color: var(--accent); font-size: 2rem;"></i>
+            <span class="logo-text">Neuron</span>
+        </div>
         <div class="search-trigger" onclick="toggleSearch()">
             <i class="fas fa-search"></i>
-            <span>Поиск по системе...</span>
+            <span>Поиск по экосистеме</span>
             <kbd>Ctrl + K</kbd>
         </div>
-    </nav>
+    </header>
 
-    <div class="services-grid" id="grid">
+    <div class="services-grid">
         <a href="https://status.neuron-p2p.ru" class="node-card" target="_blank">
-            <div class="icon-box"><i class="fas fa-signal"></i></div>
-            <div class="node-title">Neuron Status</div>
-            <p class="node-desc">Системы: <span id="live-status"><span class="status-dot dot-online"></span>ONLINE</span></p>
+            <div class="node-icon"><i class="fas fa-signal"></i></div>
+            <h3 class="node-title">Neuron Status</h3>
+            <p class="node-desc">Мониторинг всех узлов сети в реальном времени.</p>
+            <div class="status-indicator">
+                <div class="pulse-dot"></div> Systems Operational
+            </div>
+        </a>
+
+        <a href="notes.html" class="node-card">
+            <div class="node-icon"><i class="fas fa-sticky-note"></i></div>
+            <h3 class="node-title">Neuron Notes</h3>
+            <p class="node-desc">Ваше персональное облако для важных мыслей и идей.</p>
         </a>
 
         <a href="https://neuron-ai-eta.vercel.app/" class="node-card" target="_blank">
-            <div class="icon-box"><i class="fas fa-robot"></i></div>
-            <div class="node-title">Neuron AI</div>
-            <p class="node-desc">Ваш персональный интеллект для задач любой сложности.</p>
+            <div class="node-icon"><i class="fas fa-robot"></i></div>
+            <h3 class="node-title">Neuron AI</h3>
+            <p class="node-desc">Ядро искусственного интеллекта для анализа и генерации.</p>
         </a>
 
         <a href="https://link.neuron-p2p.ru" class="node-card" target="_blank">
-            <div class="icon-box"><i class="fas fa-shield-alt"></i></div>
-            <div class="node-title">Neuron Link</div>
-            <p class="node-desc">Анонимизация трафика и очистка метаданных ссылок.</p>
+            <div class="node-icon"><i class="fas fa-shield-alt"></i></div>
+            <h3 class="node-title">Neuron Link</h3>
+            <p class="node-desc">Безопасный шлюз для анонимного перехода по ссылкам.</p>
         </a>
 
         <a href="https://synapse.neuron-p2p.ru" class="node-card" target="_blank">
-            <div class="icon-box"><i class="fas fa-network-wired"></i></div>
-            <div class="node-title">Synapse</div>
-            <p class="node-desc">Безопасный P2P протокол обмена сообщениями.</p>
+            <div class="node-icon"><i class="fas fa-network-wired"></i></div>
+            <h3 class="node-title">Synapse</h3>
+            <p class="node-desc">Шифрованный P2P протокол мгновенной связи.</p>
         </a>
 
-        </div>
-</div>
+        <a href="https://converter.neuron-p2p.ru" class="node-card" target="_blank">
+            <div class="node-icon"><i class="fas fa-exchange-alt"></i></div>
+            <h3 class="node-title">Neuron Converter</h3>
+            <p class="node-desc">Универсальный инструмент преобразования величин.</p>
+        </a>
 
-<div class="mic-btn" id="mic" onclick="startVoice()">
-    <i class="fas fa-microphone"></i>
-</div>
+        <a href="https://tools.neuron-p2p.ru" class="node-card" target="_blank">
+            <div class="node-icon"><i class="fas fa-tools"></i></div>
+            <h3 class="node-title">Neuron Tools</h3>
+            <p class="node-desc">Набор инженерных утилит для веб-разработки.</p>
+        </a>
 
-<div id="search-modal" onclick="toggleSearch()">
-    <div class="search-box" onclick="event.stopPropagation()">
-        <input type="text" id="search-input" placeholder="Введите название сервиса...">
-        <div id="search-results" style="margin-top: 20px;"></div>
+        <a href="https://calendar.neuron-p2p.ru" class="node-card" target="_blank">
+            <div class="node-icon"><i class="fas fa-calendar-day"></i></div>
+            <h3 class="node-title">Neuron Calendar</h3>
+            <p class="node-desc">Ваш тайм-менеджмент в защищенном контуре.</p>
+        </a>
+
+        <a href="https://study.neuron-p2p.ru" class="node-card" target="_blank">
+            <div class="node-icon"><i class="fas fa-graduation-cap"></i></div>
+            <h3 class="node-title">Neuron Study</h3>
+            <p class="node-desc">Образовательная платформа нового поколения.</p>
+        </a>
+
+        <a href="https://budget.neuron-p2p.ru" class="node-card" target="_blank">
+            <div class="node-icon"><i class="fas fa-wallet"></i></div>
+            <h3 class="node-title">Neuron Budget</h3>
+            <p class="node-desc">Контроль финансов и аналитика ваших накоплений.</p>
+        </a>
+
+        <a href="https://game-hub.neuron-p2p.ru" class="node-card" target="_blank">
+            <div class="node-icon"><i class="fas fa-gamepad"></i></div>
+            <h3 class="node-title">Game Hub</h3>
+            <p class="node-desc">Развлекательный сегмент экосистемы Neuron.</p>
+        </a>
+
+        <a href="https://password-generator.neuron-p2p.ru" class="node-card" target="_blank">
+            <div class="node-icon"><i class="fas fa-key"></i></div>
+            <h3 class="node-title">Password Gen</h3>
+            <p class="node-desc">Генератор криптостойких паролей.</p>
+        </a>
+
+        <a href="studio.html" class="node-card">
+            <div class="node-icon"><i class="fas fa-palette"></i></div>
+            <h3 class="node-title">Digital Studio</h3>
+            <p class="node-desc">Дизайн и разработка сложных систем.</p>
+        </a>
+
+        <a href="https://ifwhat.ru" class="node-card" target="_blank">
+            <div class="node-icon"><i class="fas fa-infinity"></i></div>
+            <h3 class="node-title">What If</h3>
+            <p class="node-desc">Исследование альтернативных сценариев реальности.</p>
+        </a>
     </div>
 </div>
 
+<div id="search-modal" onclick="toggleSearch()">
+    <div class="search-container" onclick="event.stopPropagation()">
+        <input type="text" class="search-input" id="search-input" placeholder="Поиск сервиса (например: 'AI')...">
+    </div>
+</div>
+
+<div class="mic-btn" id="mic-btn" onclick="toggleVoice()">
+    <i class="fas fa-microphone"></i>
+</div>
+
 <script>
-    // 1. Скрипт живой нейронной сети (Canvas)
+    // 1. NEURAL MESH (Canvas Engine)
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
+    const particleCount = 70;
 
-    function initCanvas() {
+    function resize() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     }
@@ -259,39 +339,36 @@
         constructor() {
             this.x = Math.random() * canvas.width;
             this.y = Math.random() * canvas.height;
-            this.vx = (Math.random() - 0.5) * 0.5;
-            this.vy = (Math.random() - 0.5) * 0.5;
-            this.radius = Math.random() * 2;
+            this.vx = (Math.random() - 0.5) * 0.4;
+            this.vy = (Math.random() - 0.5) * 0.4;
+            this.radius = Math.random() * 1.5;
         }
         update() {
-            this.x += this.vx;
-            this.y += this.vy;
+            this.x += this.vx; this.y += this.vy;
             if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
             if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
         }
         draw() {
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(255, 140, 0, 0.5)';
+            ctx.fillStyle = 'rgba(255, 140, 0, 0.4)';
             ctx.fill();
         }
     }
 
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach((p, index) => {
-            p.update();
-            p.draw();
-            for (let j = index + 1; j < particles.length; j++) {
+        particles.forEach((p, i) => {
+            p.update(); p.draw();
+            for (let j = i + 1; j < particles.length; j++) {
                 const dx = p.x - particles[j].x;
                 const dy = p.y - particles[j].y;
                 const dist = Math.sqrt(dx*dx + dy*dy);
-                if (dist < 150) {
+                if (dist < 180) {
                     ctx.beginPath();
-                    ctx.strokeStyle = `rgba(255, 140, 0, ${1 - dist/150})`;
-                    ctx.lineWidth = 0.5;
-                    ctx.moveTo(p.x, p.y);
-                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.strokeStyle = `rgba(255, 140, 0, ${0.15 * (1 - dist/180)})`;
+                    ctx.lineWidth = 0.8;
+                    ctx.moveTo(p.x, p.y); ctx.lineTo(particles[j].x, particles[j].y);
                     ctx.stroke();
                 }
             }
@@ -299,53 +376,42 @@
         requestAnimationFrame(animate);
     }
 
-    window.addEventListener('resize', initCanvas);
-    initCanvas();
-    for(let i=0; i<80; i++) particles.push(new Particle());
+    window.addEventListener('resize', resize);
+    resize();
+    for(let i=0; i<particleCount; i++) particles.push(new Particle());
     animate();
 
     // 2. Command Menu (Ctrl + K)
     function toggleSearch() {
         const modal = document.getElementById('search-modal');
         modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
-        if(modal.style.display === 'flex') document.getElementById('search-input').focus();
+        if (modal.style.display === 'flex') document.getElementById('search-input').focus();
     }
 
     window.addEventListener('keydown', (e) => {
-        if (e.ctrlKey && e.key === 'k') {
-            e.preventDefault();
-            toggleSearch();
-        }
+        if (e.ctrlKey && e.key === 'k') { e.preventDefault(); toggleSearch(); }
+        if (e.key === 'Escape') { document.getElementById('search-modal').style.display = 'none'; }
     });
 
-    // 3. Голосовой поиск
-    function startVoice() {
-        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-        recognition.lang = 'ru-RU';
-        const mic = document.getElementById('mic');
-        
-        recognition.onstart = () => mic.classList.add('mic-active');
-        recognition.onend = () => mic.classList.remove('mic-active');
+    // 3. Voice Control
+    const micBtn = document.getElementById('mic-btn');
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'ru-RU';
 
-        recognition.onresult = (event) => {
-            const command = event.results[0][0].transcript.toLowerCase();
-            console.log("Голос:", command);
-            
-            if (command.includes('статус')) window.open('https://status.neuron-p2p.ru');
-            if (command.includes('линк')) window.open('https://link.neuron-p2p.ru');
-            if (command.includes('ии') || command.includes('нейросеть')) window.open('https://neuron-ai-eta.vercel.app/');
-        };
-        recognition.start();
+    function toggleVoice() {
+        try { recognition.start(); } catch(e) { recognition.stop(); }
     }
 
-    // 4. Интеграция Status (Имитация проверки)
-    async function checkStatus() {
-        // Здесь можно реально стучаться в API или просто оставить живой индикатор
-        const dot = document.querySelector('.status-dot');
-        // Для примера: если бы была ошибка, сменили бы на dot-offline
-    }
-    checkStatus();
-
+    recognition.onstart = () => micBtn.classList.add('active');
+    recognition.onend = () => micBtn.classList.remove('active');
+    recognition.onresult = (e) => {
+        const transcript = e.results[0][0].transcript.toLowerCase();
+        if (transcript.includes('статус')) window.open('https://status.neuron-p2p.ru', '_blank');
+        if (transcript.includes('ии') || transcript.includes('интеллект')) window.open('https://neuron-ai-eta.vercel.app/', '_blank');
+        if (transcript.includes('заметки')) window.location.href = 'notes.html';
+        if (transcript.includes('линк')) window.open('https://link.neuron-p2p.ru', '_blank');
+    };
 </script>
+
 </body>
 </html>
