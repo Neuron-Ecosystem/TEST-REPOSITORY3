@@ -20,29 +20,42 @@
         body { 
             background: var(--bg); 
             color: var(--text); 
-            font-family: 'Segoe UI', system-ui, sans-serif; 
+            font-family: 'Segoe UI', sans-serif; 
             overflow-x: hidden; 
             min-height: 100vh;
         }
 
-        #canvas { position: fixed; top: 0; left: 0; z-index: -1; filter: blur(0.4px); }
+        #canvas { position: fixed; top: 0; left: 0; z-index: -1; }
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 
-        /* HEADER */
+        /* --- АНИМАЦИИ --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); filter: blur(10px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 140, 0, 0.4); }
+            70% { box-shadow: 0 0 0 12px rgba(255, 140, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 140, 0, 0); }
+        }
+
+        /* --- HEADER --- */
         .header-ui {
             display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;
             backdrop-filter: blur(25px); padding: 20px 30px; border-radius: 24px;
             border: 1px solid var(--glass-border); background: var(--glass);
-            animation: slideDown 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-            position: relative; z-index: 2000;
+            animation: slideDown 0.8s ease; position: relative; z-index: 2000;
         }
 
-        .logo-box { display: flex; align-items: center; gap: 15px; }
-        .logo-text { font-size: 1.5rem; font-weight: 800; letter-spacing: 5px; color: var(--accent); text-transform: uppercase; text-shadow: 0 0 15px var(--accent-glow); }
+        .logo-box { display: flex; align-items: center; gap: 12px; color: var(--accent); font-weight: 800; letter-spacing: 4px; text-transform: uppercase; }
 
         .nav-actions { display: flex; gap: 15px; align-items: center; }
 
-        /* КОЛОКОЛЬЧИК И УВЕДОМЛЕНИЯ */
+        /* --- УВЕДОМЛЕНИЯ --- */
         .notification-container { position: relative; }
         .notification-bell {
             background: none; border: none; color: var(--text-dim);
@@ -51,107 +64,73 @@
         .bell-dot {
             position: absolute; top: 5px; right: 5px; width: 10px; height: 10px;
             background: #ff4444; border-radius: 50%; border: 2px solid var(--bg); display: none;
-            box-shadow: 0 0 10px #ff4444;
         }
 
         .news-dropdown {
-            position: absolute;
-            top: calc(100% + 15px);
-            right: 0;
-            width: 320px;
-            background: #0a0b14;
-            border: 1px solid var(--accent);
-            border-radius: 20px;
-            backdrop-filter: blur(30px);
-            display: none;
-            flex-direction: column;
-            z-index: 9999;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+            position: absolute; top: calc(100% + 15px); right: 0; width: 320px;
+            background: #0a0b14; border: 1px solid var(--accent); border-radius: 20px;
+            backdrop-filter: blur(30px); display: none; flex-direction: column; z-index: 9999;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9); overflow: hidden;
         }
-        .news-dropdown.show { display: flex; animation: slideDown 0.3s ease; }
-        .news-item { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .news-date { font-size: 0.7rem; color: var(--accent); font-weight: bold; display: block; margin-bottom: 5px; }
-        .news-text { font-size: 0.85rem; line-height: 1.4; color: var(--text-dim); }
+        .news-dropdown.show { display: flex; animation: slideDown 0.3s ease forwards; }
 
-        /* КНОПКИ */
+        /* --- КНОПКИ --- */
         .btn-donate {
             background: var(--accent); color: #000; border: none; padding: 12px 24px; 
-            border-radius: 14px; font-weight: 800; cursor: pointer; transition: all 0.4s;
-            box-shadow: 0 4px 15px rgba(255, 140, 0, 0.2);
-        }
-        .btn-donate:hover { transform: translateY(-2px); box-shadow: 0 8px 25px var(--accent-glow); }
-
-        .search-trigger {
-            background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border);
-            padding: 12px 24px; border-radius: 14px; color: var(--text-dim);
-            cursor: pointer; display: flex; align-items: center; gap: 15px; transition: 0.3s;
+            border-radius: 14px; font-weight: 800; cursor: pointer; transition: 0.3s;
+            animation: pulse 2s infinite;
         }
 
-        /* СЕТКА СЕРВИСОВ */
-        .services-grid { 
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-            gap: 25px; margin-bottom: 40px; position: relative; z-index: 1;
-        }
+        .search-trigger { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; cursor: pointer; color: var(--text-dim); }
+
+        /* --- СЕТКА СЕРВИСОВ --- */
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 50px; }
 
         .node-card {
-            background: var(--glass); backdrop-filter: blur(25px); border: 1px solid var(--glass-border);
+            background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--glass-border);
             border-radius: 28px; padding: 30px; text-decoration: none; color: inherit;
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            animation: fadeInUp 0.6s ease backwards;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0; animation: fadeInUp 0.6s ease forwards;
         }
-        .node-card:hover {
-            border-color: var(--accent); transform: translateY(-12px);
-            background: rgba(255, 255, 255, 0.05);
-        }
-        .node-icon { font-size: 2.2rem; color: var(--accent); margin-bottom: 20px; }
-        .node-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 12px; }
-        .node-desc { font-size: 0.95rem; color: var(--text-dim); line-height: 1.6; }
+        .node-card:hover { border-color: var(--accent); transform: translateY(-12px); background: rgba(255,255,255,0.05); }
+        .node-icon { font-size: 2.2rem; color: var(--accent); margin-bottom: 15px; }
+        .node-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+        .node-desc { font-size: 0.9rem; color: var(--text-dim); line-height: 1.5; }
 
-        /* НИЖНИЙ ЖУРНАЛ */
+        /* --- НИЖНИЙ ВИДЖЕТ --- */
         .news-widget {
             background: var(--glass); border: 1px solid var(--glass-border);
-            border-radius: 28px; padding: 30px; margin-bottom: 60px;
-            animation: fadeInUp 0.8s ease backwards;
+            border-radius: 28px; padding: 25px; margin-bottom: 60px;
+            animation: fadeInUp 0.8s ease forwards; animation-delay: 0.4s;
         }
-        .news-widget-header { color: var(--accent); font-weight: 800; margin-bottom: 20px; letter-spacing: 2px; font-size: 0.9rem; }
-        .news-widget-item { display: flex; gap: 20px; padding: 15px; background: rgba(255,255,255,0.02); border-radius: 18px; margin-bottom: 10px; }
-        .news-widget-date { min-width: 130px; font-size: 0.75rem; color: var(--accent); font-weight: bold; }
+        .news-widget-item { display: flex; gap: 15px; padding: 12px; border-radius: 15px; background: rgba(0,0,0,0.2); margin-bottom: 10px; }
 
-        /* FOOTER */
-        .footer { 
-            text-align: center; padding: 50px 20px; border-top: 1px solid var(--glass-border);
-            backdrop-filter: blur(15px); background: var(--glass); border-radius: 40px 40px 0 0;
-        }
-        .social-link { font-size: 2rem; margin: 0 15px; color: var(--text); transition: 0.4s; display: inline-block; }
+        /* --- FOOTER --- */
+        .footer { text-align: center; padding: 50px; border-top: 1px solid var(--glass-border); background: var(--glass); border-radius: 40px 40px 0 0; }
+        .social-link { font-size: 1.8rem; margin: 0 12px; color: var(--text-dim); transition: 0.3s; }
         .social-link:hover { color: var(--accent); transform: translateY(-5px); }
 
         /* МИКРОФОН */
         .mic-btn {
-            position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px;
+            position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px;
             background: var(--accent); border-radius: 50%; display: flex;
             justify-content: center; align-items: center; cursor: pointer;
-            z-index: 5000; box-shadow: 0 10px 30px var(--accent-glow); transition: 0.3s;
+            z-index: 5000; box-shadow: 0 10px 30px var(--accent-glow);
         }
 
-        /* АНИМАЦИИ */
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* АДАПТАЦИЯ ТЕЛЕФОНОВ */
+        /* МОБИЛЬНАЯ АДАПТАЦИЯ */
         @media (max-width: 768px) {
             .header-ui { padding: 15px 20px; }
-            .logo-text { font-size: 1.1rem; letter-spacing: 2px; }
-            .search-trigger span { display: none; }
+            .logo-text { font-size: 1.2rem; letter-spacing: 2px; }
+            .btn-donate { padding: 10px 15px; font-size: 0.8rem; }
             
             .news-dropdown {
                 position: absolute;
-                top: 65px;
-                right: -10px;
+                top: 60px;
+                right: -10px; /* Выравнивание под колокольчик */
                 width: calc(100vw - 40px);
                 max-width: 340px;
-                transform: none !important;
             }
-
             .news-widget-item { flex-direction: column; gap: 5px; }
         }
     </style>
@@ -162,12 +141,9 @@
 
 <div class="container">
     <header class="header-ui">
-        <div class="logo-box">
-            <i class="fas fa-brain"></i>
-            <span class="logo-text">Neuron</span>
-        </div>
+        <div class="logo-box"><i class="fas fa-brain"></i> <span class="logo-text">Neuron</span></div>
         <div class="nav-actions">
-            <div class="search-trigger" onclick="toggleSearch()"><i class="fas fa-search"></i> <span>Поиск</span></div>
+            <div class="search-trigger" onclick="toggleSearch()"><i class="fas fa-search"></i></div>
             <div class="notification-container">
                 <button class="notification-bell" onclick="toggleNewsDropdown()">
                     <i class="fas fa-bell"></i>
@@ -177,40 +153,38 @@
                     <div id="news-list"></div>
                 </div>
             </div>
-            <button class="btn-donate" onclick="toggleDonate()">Поддержать</button>
+            <button class="btn-donate" onclick="toggleDonate()">ДОНАТ</button>
         </div>
     </header>
 
     <div class="services-grid" id="main-grid"></div>
 
-    <section class="news-section">
-        <div class="news-widget">
-            <div class="news-widget-header"><i class="fas fa-bolt"></i> ЖУРНАЛ СОБЫТИЙ</div>
-            <div id="news-widget-list"></div>
+    <div class="news-widget">
+        <div style="color:var(--accent); font-weight:800; margin-bottom:15px; font-size:0.9rem;">
+            <i class="fas fa-rss"></i> ПОСЛЕДНИЕ ОБНОВЛЕНИЯ
         </div>
-    </section>
+        <div id="news-widget-list"></div>
+    </div>
 
     <footer class="footer">
         <div class="social-icons">
             <a href="https://t.me/neuron_ecosystem" target="_blank" class="social-link"><i class="fab fa-telegram"></i></a>
             <a href="https://vk.com/club233118101" target="_blank" class="social-link"><i class="fab fa-vk"></i></a>
             <a href="https://www.tiktok.com/@neuron_eco" target="_blank" class="social-link"><i class="fab fa-tiktok"></i></a>
-            <div class="social-link" onclick="copyEmail()" style="cursor:pointer"><i class="fas fa-envelope"></i></div>
+            <span class="social-link" onclick="copyEmail()" style="cursor:pointer"><i class="fas fa-envelope"></i></span>
         </div>
-        <p style="margin-top:20px; opacity:0.3; letter-spacing:3px">NEURON ECOSYSTEM 2026</p>
+        <p style="margin-top:25px; opacity:0.3; letter-spacing:2px; font-size:0.8rem;">NEURON ECOSYSTEM &copy; 2026</p>
     </footer>
 </div>
 
-<div id="search-modal" onclick="toggleSearch()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(5,5,10,0.98); z-index:10000; justify-content:center; padding-top:10vh;">
-    <div class="search-container" onclick="event.stopPropagation()" style="width:90%; max-width:700px">
-        <input type="text" id="search-input" placeholder="Поиск..." style="width:100%; background:rgba(255,255,255,0.05); border:2px solid var(--accent); color:#fff; padding:20px; border-radius:20px; font-size:1.4rem; outline:none;">
-        <div id="suggestions" style="margin-top:20px; border-radius:20px; overflow:hidden;"></div>
+<div id="search-modal" onclick="toggleSearch()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:10000; justify-content:center; padding-top:15vh;">
+    <div class="search-container" onclick="event.stopPropagation()" style="width:90%; max-width:600px">
+        <input type="text" id="search-input" placeholder="Поиск сервиса..." style="width:100%; background:none; border:2px solid var(--accent); color:#fff; padding:15px; border-radius:15px; outline:none; font-size:1.2rem;">
+        <div id="suggestions" style="margin-top:20px;"></div>
     </div>
 </div>
 
-<div class="mic-btn" id="mic-btn" onclick="toggleVoice()">
-    <i class="fas fa-microphone" style="color:#000; font-size:1.5rem"></i>
-</div>
+<div class="mic-btn" id="mic-btn" onclick="toggleVoice()"><i class="fas fa-microphone" style="color:#000; font-size:1.4rem"></i></div>
 
 <script>
     const services = [
@@ -232,49 +206,43 @@
     ];
 
     const ALL_NEWS = [
-        { id: 3, date: "20.01.2026 | 21:55", text: "Исправлено положение уведомлений на мобильных устройствах — теперь ровно под колокольчиком." },
-        { id: 2, date: "20.01.2026 | 21:00", text: "Добавлен нижний виджет истории обновлений." },
-        { id: 1, date: "20.01.2026 | 12:00", text: "Запуск Neuron 2.0 Mesh UI." }
+        { id: 2, date: "20.01.26", text: "Исправлена мобильная адаптация и открытие уведомлений под колокольчиком." },
+        { id: 1, date: "20.01.26", text: "Анимации появления карточек полностью восстановлены." }
     ];
 
     function init() {
         const grid = document.getElementById('main-grid');
         grid.innerHTML = services.map((s, i) => `
-            <a href="${s.url}" class="node-card" target="_blank" style="--i: ${i}">
-                <div class="node-icon"><i class="fas ${s.icon}"></i></div>
+            <a href="${s.url}" class="node-card" style="--i: ${i}; animation-delay: ${i * 0.1}s" target="_blank">
+                <i class="fas ${s.icon} node-icon"></i>
                 <h3 class="node-title">${s.name}</h3>
                 <p class="node-desc">${s.desc}</p>
             </a>
         `).join('');
 
-        const list = document.getElementById('news-list');
-        const widget = document.getElementById('news-widget-list');
-        list.innerHTML = ALL_NEWS.slice(0, 3).map(n => `<div class="news-item"><span class="news-date">${n.date}</span><div class="news-text">${n.text}</div></div>`).join('');
-        widget.innerHTML = ALL_NEWS.slice(0, 3).map(n => `<div class="news-widget-item"><div class="news-widget-date">${n.date}</div><div class="news-widget-text">${n.text}</div></div>`).join('');
+        document.getElementById('news-list').innerHTML = ALL_NEWS.map(n => `
+            <div style="padding:15px; border-bottom:1px solid rgba(255,255,255,0.05)">
+                <small style="color:var(--accent)">${n.date}</small>
+                <p style="font-size:0.85rem; margin-top:4px;">${n.text}</p>
+            </div>
+        `).join('');
 
-        if (ALL_NEWS[0].id > (localStorage.getItem('last_news_id') || 0)) document.getElementById('bell-dot').style.display = 'block';
+        document.getElementById('news-widget-list').innerHTML = ALL_NEWS.map(n => `
+            <div class="news-widget-item">
+                <span style="color:var(--accent); font-weight:bold; min-width:80px; font-size:0.8rem;">${n.date}</span>
+                <span style="font-size:0.9rem;">${n.text}</span>
+            </div>
+        `).join('');
+
+        if (ALL_NEWS[0].id > (localStorage.getItem('last_id') || 0)) document.getElementById('bell-dot').style.display = 'block';
     }
-
-    document.getElementById('search-input').addEventListener('input', (e) => {
-        const val = e.target.value.toLowerCase();
-        const res = document.getElementById('suggestions');
-        res.innerHTML = '';
-        if(!val) return;
-        services.filter(s => s.name.toLowerCase().includes(val) || s.tags.some(t => t.includes(val))).forEach(s => {
-            const div = document.createElement('div');
-            div.style.padding = '15px'; div.style.background = 'rgba(255,255,255,0.05)'; div.style.cursor = 'pointer';
-            div.innerHTML = `<i class="fas ${s.icon}" style="color:var(--accent); margin-right:15px"></i> ${s.name}`;
-            div.onclick = () => window.open(s.url, '_blank');
-            res.appendChild(div);
-        });
-    });
 
     function toggleNewsDropdown() {
         const d = document.getElementById('news-dropdown');
         d.classList.toggle('show');
         if(d.classList.contains('show')) {
             document.getElementById('bell-dot').style.display = 'none';
-            localStorage.setItem('last_news_id', ALL_NEWS[0].id);
+            localStorage.setItem('last_id', ALL_NEWS[0].id);
         }
     }
 
@@ -284,33 +252,44 @@
         if(m.style.display === 'flex') document.getElementById('search-input').focus();
     }
 
-    function toggleDonate() { window.open('https://yoomoney.ru/to/4100119394883694', '_blank'); }
-    function copyEmail() { navigator.clipboard.writeText('wertq6306@gmail.com'); alert('Почта скопирована!'); }
+    document.getElementById('search-input').addEventListener('input', (e) => {
+        const val = e.target.value.toLowerCase();
+        const res = document.getElementById('suggestions');
+        res.innerHTML = '';
+        if(!val) return;
+        services.filter(s => s.name.toLowerCase().includes(val) || s.tags.some(t => t.includes(val))).forEach(s => {
+            const div = document.createElement('div');
+            div.style.padding = '15px'; div.style.background = 'rgba(255,255,255,0.05)'; div.style.cursor = 'pointer'; div.style.marginBottom = '5px'; div.style.borderRadius = '10px';
+            div.innerHTML = `<i class="fas ${s.icon}" style="color:var(--accent); margin-right:15px"></i> ${s.name}`;
+            div.onclick = () => window.open(s.url, '_blank');
+            res.appendChild(div);
+        });
+    });
 
+    function toggleDonate() { window.open('https://yoomoney.ru/to/4100119394883694', '_blank'); }
+    function copyEmail() { navigator.clipboard.writeText('wertq6306@gmail.com'); alert('Email скопирован!'); }
+
+    // Голос
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.lang = 'ru-RU';
     function toggleVoice() { try { recognition.start(); } catch(e) {} }
     recognition.onstart = () => document.getElementById('mic-btn').style.background = '#ff4444';
     recognition.onend = () => document.getElementById('mic-btn').style.background = 'var(--accent)';
     recognition.onresult = (e) => {
-        const speech = e.results[0][0].transcript.toLowerCase();
-        const found = services.find(s => speech.includes(s.name.toLowerCase()) || s.tags.some(t => speech.includes(t)));
-        if(found) window.open(found.url, '_blank');
+        const query = e.results[0][0].transcript.toLowerCase();
+        const s = services.find(x => query.includes(x.name.toLowerCase()) || x.tags.some(t => query.includes(t)));
+        if(s) window.open(s.url, '_blank');
     };
 
+    // Фон
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-    let pts = [];
     function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     window.onresize = resize; resize();
-    for(let i=0; i<60; i++) pts.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, vx:(Math.random()-0.5)*0.5, vy:(Math.random()-0.5)*0.5});
     function draw() {
         ctx.clearRect(0,0,canvas.width,canvas.height);
-        pts.forEach((p, i) => {
-            p.x+=p.vx; p.y+=p.vy;
-            if(p.x<0||p.x>canvas.width) p.vx*=-1; if(p.y<0||p.y>canvas.height) p.vy*=-1;
-            ctx.fillStyle = 'rgba(255,140,0,0.3)'; ctx.beginPath(); ctx.arc(p.x,p.y,1.2,0,Math.PI*2); ctx.fill();
-        });
+        ctx.fillStyle = 'rgba(255,140,0,0.15)';
+        for(let i=0; i<40; i++) { ctx.beginPath(); ctx.arc(Math.random()*canvas.width, Math.random()*canvas.height, 1, 0, Math.PI*2); ctx.fill(); }
         requestAnimationFrame(draw);
     }
     draw();
