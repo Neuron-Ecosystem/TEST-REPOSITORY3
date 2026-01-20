@@ -3,90 +3,349 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neuron Ecosystem</title>
+    <title>Neuron Ecosystem | Neural Mesh</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --bg: #05050a;
+            --accent: #ff8c00;
+            --accent-glow: rgba(255, 140, 0, 0.4);
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text: #e6edf3;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            background: #000;
-            color: #fff;
-            font-family: 'Inter', -apple-system, sans-serif;
-            display: flex; align-items: center; justify-content: center;
-            min-height: 100vh; padding: 20px;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
         }
-        .bento-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: repeat(3, 180px);
-            gap: 20px;
-            max-width: 1100px; width: 100%;
+
+        /* Живой фон с частицами и линиями */
+        #canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            filter: blur(1px);
         }
-        .card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 24px;
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        /* Навигационная панель */
+        .nav-ui {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 60px;
             backdrop-filter: blur(10px);
-            transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-            text-decoration: none; color: white;
-            display: flex; flex-direction: column; justify-content: flex-end;
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass);
         }
-        .card:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: #6366f1;
-            transform: scale(1.02);
-        }
-        .card i { font-size: 2rem; margin-bottom: auto; color: #6366f1; }
-        .card h3 { font-size: 1.2rem; margin-bottom: 4px; }
-        .card p { font-size: 0.85rem; color: #aaa; }
 
-        /* Размеры карточек */
-        .large { grid-column: span 2; grid-row: span 2; background: linear-gradient(45deg, rgba(99,102,241,0.1), transparent); }
-        .wide { grid-column: span 2; }
-        .tall { grid-row: span 2; }
+        .logo { font-size: 1.8rem; font-weight: bold; letter-spacing: 4px; color: var(--accent); }
 
-        @media (max-width: 768px) {
-            .bento-grid { display: flex; flex-direction: column; }
-            .card { min-height: 150px; }
+        .search-trigger {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--glass-border);
+            padding: 10px 20px;
+            border-radius: 12px;
+            color: #888;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
+
+        kbd {
+            background: #333;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: #fff;
+        }
+
+        /* Сетка Bento в стиле Neural Mesh */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .node-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 30px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .node-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px var(--accent-glow);
+        }
+
+        .icon-box {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        .node-card:hover .icon-box { transform: scale(1.1); text-shadow: 0 0 20px var(--accent); }
+
+        .node-title { font-size: 1.4rem; margin-bottom: 10px; font-weight: 600; }
+        .node-desc { font-size: 0.9rem; opacity: 0.6; line-height: 1.5; }
+
+        /* Специальный статус для Neuron Status */
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            position: relative;
+        }
+        .dot-online { 
+            background: #00ff88; 
+            box-shadow: 0 0 10px #00ff88;
+            animation: pulse-green 2s infinite; 
+        }
+        .dot-checking { background: #58a6ff; }
+        
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); }
+        }
+
+        /* Модальное окно поиска */
+        #search-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 100px;
+            z-index: 100;
+        }
+        .search-box {
+            width: 90%;
+            max-width: 600px;
+            background: #1a1b2e;
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid var(--accent);
+        }
+        .search-box input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            outline: none;
+        }
+
+        /* Голосовой поиск иконка */
+        .mic-btn {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            width: 60px;
+            height: 60px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 0 20px var(--accent-glow);
+            z-index: 99;
+            transition: 0.3s;
+        }
+        .mic-btn:hover { transform: scale(1.1); }
+        .mic-active { animation: pulse-red 1s infinite; background: #ff4444; }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7); }
+            100% { box-shadow: 0 0 0 20px rgba(255, 68, 68, 0); }
+        }
+
     </style>
 </head>
 <body>
-    <div class="bento-grid">
-        <a href="https://neurondigital.tilda.ws" class="card large">
-            <i class="fas fa-palette"></i>
-            <h3>Digital Studio</h3>
-            <p>Брендинг и разработка сложных SaaS-решений для бизнеса.</p>
+
+<canvas id="canvas"></canvas>
+
+<div class="container">
+    <nav class="nav-ui">
+        <div class="logo">NEURON</div>
+        <div class="search-trigger" onclick="toggleSearch()">
+            <i class="fas fa-search"></i>
+            <span>Поиск по системе...</span>
+            <kbd>Ctrl + K</kbd>
+        </div>
+    </nav>
+
+    <div class="services-grid" id="grid">
+        <a href="https://status.neuron-p2p.ru" class="node-card" target="_blank">
+            <div class="icon-box"><i class="fas fa-signal"></i></div>
+            <div class="node-title">Neuron Status</div>
+            <p class="node-desc">Системы: <span id="live-status"><span class="status-dot dot-online"></span>ONLINE</span></p>
         </a>
 
-        <a href="https://neuron-ai-eta.vercel.app/" class="card wide">
-            <i class="fas fa-brain"></i>
-            <h3>Neuron AI</h3>
-            <p>Интеллектуальное ядро системы.</p>
+        <a href="https://neuron-ai-eta.vercel.app/" class="node-card" target="_blank">
+            <div class="icon-box"><i class="fas fa-robot"></i></div>
+            <div class="node-title">Neuron AI</div>
+            <p class="node-desc">Ваш персональный интеллект для задач любой сложности.</p>
         </a>
 
-        <a href="https://synapse.neuron-p2p.ru" class="card">
-            <i class="fas fa-comments"></i>
-            <h3>Synapse</h3>
-            <p>P2P Chat.</p>
+        <a href="https://link.neuron-p2p.ru" class="node-card" target="_blank">
+            <div class="icon-box"><i class="fas fa-shield-alt"></i></div>
+            <div class="node-title">Neuron Link</div>
+            <p class="node-desc">Анонимизация трафика и очистка метаданных ссылок.</p>
         </a>
 
-        <a href="notes.html" class="card tall">
-            <i class="fas fa-sticky-note"></i>
-            <h3>Notes</h3>
-            <p>Твои мысли под полным контролем.</p>
+        <a href="https://synapse.neuron-p2p.ru" class="node-card" target="_blank">
+            <div class="icon-box"><i class="fas fa-network-wired"></i></div>
+            <div class="node-title">Synapse</div>
+            <p class="node-desc">Безопасный P2P протокол обмена сообщениями.</p>
         </a>
 
-        <a href="https://converter.neuron-p2p.ru" class="card">
-            <i class="fas fa-exchange-alt"></i>
-            <h3>Converter</h3>
-        </a>
+        </div>
+</div>
 
-        <a href="https://budget.neuron-p2p.ru" class="card wide">
-            <i class="fas fa-wallet"></i>
-            <h3>Budget Tracker</h3>
-            <p>Финансовая аналитика 2026.</p>
-        </a>
+<div class="mic-btn" id="mic" onclick="startVoice()">
+    <i class="fas fa-microphone"></i>
+</div>
+
+<div id="search-modal" onclick="toggleSearch()">
+    <div class="search-box" onclick="event.stopPropagation()">
+        <input type="text" id="search-input" placeholder="Введите название сервиса...">
+        <div id="search-results" style="margin-top: 20px;"></div>
     </div>
+</div>
+
+<script>
+    // 1. Скрипт живой нейронной сети (Canvas)
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function initCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+
+    class Particle {
+        constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.vx = (Math.random() - 0.5) * 0.5;
+            this.vy = (Math.random() - 0.5) * 0.5;
+            this.radius = Math.random() * 2;
+        }
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+            if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+        }
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255, 140, 0, 0.5)';
+            ctx.fill();
+        }
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach((p, index) => {
+            p.update();
+            p.draw();
+            for (let j = index + 1; j < particles.length; j++) {
+                const dx = p.x - particles[j].x;
+                const dy = p.y - particles[j].y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                if (dist < 150) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = `rgba(255, 140, 0, ${1 - dist/150})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.moveTo(p.x, p.y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.stroke();
+                }
+            }
+        });
+        requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', initCanvas);
+    initCanvas();
+    for(let i=0; i<80; i++) particles.push(new Particle());
+    animate();
+
+    // 2. Command Menu (Ctrl + K)
+    function toggleSearch() {
+        const modal = document.getElementById('search-modal');
+        modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+        if(modal.style.display === 'flex') document.getElementById('search-input').focus();
+    }
+
+    window.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.key === 'k') {
+            e.preventDefault();
+            toggleSearch();
+        }
+    });
+
+    // 3. Голосовой поиск
+    function startVoice() {
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'ru-RU';
+        const mic = document.getElementById('mic');
+        
+        recognition.onstart = () => mic.classList.add('mic-active');
+        recognition.onend = () => mic.classList.remove('mic-active');
+
+        recognition.onresult = (event) => {
+            const command = event.results[0][0].transcript.toLowerCase();
+            console.log("Голос:", command);
+            
+            if (command.includes('статус')) window.open('https://status.neuron-p2p.ru');
+            if (command.includes('линк')) window.open('https://link.neuron-p2p.ru');
+            if (command.includes('ии') || command.includes('нейросеть')) window.open('https://neuron-ai-eta.vercel.app/');
+        };
+        recognition.start();
+    }
+
+    // 4. Интеграция Status (Имитация проверки)
+    async function checkStatus() {
+        // Здесь можно реально стучаться в API или просто оставить живой индикатор
+        const dot = document.querySelector('.status-dot');
+        // Для примера: если бы была ошибка, сменили бы на dot-offline
+    }
+    checkStatus();
+
+</script>
 </body>
 </html>
