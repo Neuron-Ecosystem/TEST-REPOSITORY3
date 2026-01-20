@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neuron Ecosystem | Neural Mesh</title>
+    <title>Neuron Ecosystem | Neural Mesh 2.0</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -17,193 +17,75 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; overflow-x: hidden; min-height: 100vh; }
+        #canvas { position: fixed; top: 0; left: 0; z-index: -1; filter: blur(0.5px); }
 
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-
-        #canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            filter: blur(0.5px);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
 
         /* UI Header */
         .header-ui {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 50px;
-            backdrop-filter: blur(15px);
-            padding: 20px 30px;
-            border-radius: 24px;
-            border: 1px solid var(--glass-border);
-            background: var(--glass);
-            animation: fadeInDown 0.8s ease;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px;
+            backdrop-filter: blur(15px); padding: 20px 30px; border-radius: 24px;
+            border: 1px solid var(--glass-border); background: var(--glass);
         }
-
         .logo-box { display: flex; align-items: center; gap: 15px; }
         .logo-text { font-size: 1.5rem; font-weight: 800; letter-spacing: 5px; color: var(--accent); text-transform: uppercase; }
 
         .search-trigger {
-            background: rgba(0,0,0,0.4);
-            border: 1px solid var(--glass-border);
-            padding: 12px 24px;
-            border-radius: 14px;
-            color: var(--text-dim);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            transition: 0.3s;
+            background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border);
+            padding: 12px 24px; border-radius: 14px; color: var(--text-dim);
+            cursor: pointer; display: flex; align-items: center; gap: 20px; transition: 0.3s;
         }
         .search-trigger:hover { border-color: var(--accent); }
         kbd { background: #222; padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; border: 1px solid #444; }
 
-        /* Grid System */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
+        /* Grid */
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
         .node-card {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 25px;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            animation: fadeInUp 0.6s ease backwards;
+            background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--glass-border);
+            border-radius: 24px; padding: 25px; text-decoration: none; color: inherit;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); display: flex; flex-direction: column;
         }
-
-        .node-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(255, 140, 0, 0.15);
-            background: rgba(255, 140, 0, 0.02);
-        }
-
-        .node-icon {
-            font-size: 2rem;
-            color: var(--accent);
-            margin-bottom: 20px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-        }
-
+        .node-card:hover { border-color: var(--accent); transform: translateY(-8px); box-shadow: 0 20px 40px rgba(255, 140, 0, 0.15); }
+        .node-icon { font-size: 2rem; color: var(--accent); margin-bottom: 20px; }
         .node-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 10px; }
-        .node-desc { font-size: 0.9rem; color: var(--text-dim); line-height: 1.5; flex-grow: 1; }
+        .node-desc { font-size: 0.9rem; color: var(--text-dim); line-height: 1.5; }
 
-        /* Status Integration */
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            margin-top: 15px;
-            color: #00ff88;
-            text-transform: uppercase;
-        }
-        .pulse-dot {
-            width: 8px;
-            height: 8px;
-            background: #00ff88;
-            border-radius: 50%;
-            box-shadow: 0 0 10px #00ff88;
-            animation: pulse 2s infinite;
-        }
+        /* Status Dot */
+        .status-indicator { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; color: #00ff88; margin-top: 15px; }
+        .pulse-dot { width: 8px; height: 8px; background: #00ff88; border-radius: 50%; animation: pulse 2s infinite; }
 
-        /* Search Modal */
+        /* ПОИСКОВАЯ СИСТЕМА */
         #search-modal {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 5, 10, 0.95);
-            display: none;
-            justify-content: center;
-            padding-top: 10vh;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 5, 10, 0.98); display: none; justify-content: center;
+            padding-top: 10vh; z-index: 1000; backdrop-filter: blur(15px);
         }
-        .search-container { width: 90%; max-width: 600px; }
+        .search-container { width: 90%; max-width: 650px; position: relative; }
         .search-input {
-            width: 100%;
-            background: var(--glass);
-            border: 1px solid var(--accent);
-            padding: 20px;
-            border-radius: 18px;
-            color: #fff;
-            font-size: 1.2rem;
-            outline: none;
-            box-shadow: 0 0 30px var(--accent-glow);
+            width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--accent);
+            padding: 22px; border-radius: 20px; color: #fff; font-size: 1.4rem; outline: none;
         }
+        .suggestions-box {
+            margin-top: 15px; background: rgba(255,255,255,0.03); border-radius: 18px;
+            max-height: 400px; overflow-y: auto; border: 1px solid var(--glass-border);
+        }
+        .suggestion-item {
+            padding: 15px 25px; display: flex; align-items: center; gap: 15px;
+            cursor: pointer; transition: 0.2s; border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .suggestion-item:hover { background: rgba(255, 140, 0, 0.1); color: var(--accent); }
 
-        /* Voice Button */
+        /* Голос */
         .mic-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 65px;
-            height: 65px;
-            background: var(--accent);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: 0 10px 30px var(--accent-glow);
-            z-index: 100;
-            transition: 0.3s;
-            color: #000;
-            font-size: 1.5rem;
+            position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px;
+            background: var(--accent); border-radius: 50%; display: flex; justify-content: center;
+            align-items: center; cursor: pointer; z-index: 100; transition: 0.3s; color: #000; font-size: 1.5rem;
         }
         .mic-btn.active { background: #ff4444; animation: micPulse 1s infinite; }
 
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
         @keyframes micPulse { 0% { box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7); } 100% { box-shadow: 0 0 0 20px rgba(255, 68, 68, 0); } }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Animation Delays */
-        .node-card:nth-child(1) { animation-delay: 0.1s; }
-        .node-card:nth-child(2) { animation-delay: 0.15s; }
-        .node-card:nth-child(3) { animation-delay: 0.2s; }
-        .node-card:nth-child(4) { animation-delay: 0.25s; }
-        .node-card:nth-child(5) { animation-delay: 0.3s; }
-        .node-card:nth-child(6) { animation-delay: 0.35s; }
-        .node-card:nth-child(7) { animation-delay: 0.4s; }
-        .node-card:nth-child(8) { animation-delay: 0.45s; }
-        .node-card:nth-child(9) { animation-delay: 0.5s; }
-        .node-card:nth-child(10) { animation-delay: 0.55s; }
-        .node-card:nth-child(11) { animation-delay: 0.6s; }
-        .node-card:nth-child(12) { animation-delay: 0.65s; }
-        .node-card:nth-child(13) { animation-delay: 0.7s; }
-        .node-card:nth-child(14) { animation-delay: 0.75s; }
-
-        @media (max-width: 768px) {
-            .header-ui { flex-direction: column; gap: 20px; text-align: center; }
-            .search-trigger { width: 100%; justify-content: center; }
-            .mic-btn { width: 55px; height: 55px; bottom: 20px; right: 20px; }
-        }
     </style>
 </head>
 <body>
@@ -212,191 +94,95 @@
 
 <div class="container">
     <header class="header-ui">
-        <div class="logo-box">
-            <i class="fas fa-brain" style="color: var(--accent); font-size: 2rem;"></i>
-            <span class="logo-text">Neuron</span>
-        </div>
-        <div class="search-trigger" onclick="toggleSearch()">
-            <i class="fas fa-search"></i>
-            <span>Поиск по экосистеме</span>
-            <kbd>Ctrl + K</kbd>
-        </div>
+        <div class="logo-box"><i class="fas fa-brain" style="color: var(--accent); font-size: 2rem;"></i><span class="logo-text">Neuron</span></div>
+        <div class="search-trigger" onclick="toggleSearch()"><i class="fas fa-search"></i><span>Поиск сервиса...</span><kbd>Ctrl + K</kbd></div>
     </header>
 
-    <div class="services-grid">
-        <a href="https://status.neuron-p2p.ru" class="node-card" target="_blank">
-            <div class="node-icon"><i class="fas fa-signal"></i></div>
-            <h3 class="node-title">Neuron Status</h3>
-            <p class="node-desc">Мониторинг всех узлов сети в реальном времени.</p>
-            <div class="status-indicator">
-                <div class="pulse-dot"></div> Systems Operational
-            </div>
-        </a>
-
-        <a href="notes.html" class="node-card">
-            <div class="node-icon"><i class="fas fa-sticky-note"></i></div>
-            <h3 class="node-title">Neuron Notes</h3>
-            <p class="node-desc">Ваше персональное облако для важных мыслей и идей.</p>
-        </a>
-
-        <a href="https://neuron-ai-eta.vercel.app/" class="node-card" target="_blank">
-            <div class="node-icon"><i class="fas fa-robot"></i></div>
-            <h3 class="node-title">Neuron AI</h3>
-            <p class="node-desc">Ядро искусственного интеллекта для анализа и генерации.</p>
-        </a>
-
-        <a href="https://link.neuron-p2p.ru" class="node-card" target="_blank">
-            <div class="node-icon"><i class="fas fa-shield-alt"></i></div>
-            <h3 class="node-title">Neuron Link</h3>
-            <p class="node-desc">Безопасный шлюз для анонимного перехода по ссылкам.</p>
-        </a>
-
-        <a href="https://synapse.neuron-p2p.ru" class="node-card" target="_blank">
-            <div class="node-icon"><i class="fas fa-network-wired"></i></div>
-            <h3 class="node-title">Synapse</h3>
-            <p class="node-desc">Шифрованный P2P протокол мгновенной связи.</p>
-        </a>
-
-        <a href="https://converter.neuron-p2p.ru" class="node-card" target="_blank">
-            <div class="node-icon"><i class="fas fa-exchange-alt"></i></div>
-            <h3 class="node-title">Neuron Converter</h3>
-            <p class="node-desc">Универсальный инструмент преобразования величин.</p>
-        </a>
-
-        <a href="https://tools.neuron-p2p.ru" class="node-card" target="_blank">
-            <div class="node-icon"><i class="fas fa-tools"></i></div>
-            <h3 class="node-title">Neuron Tools</h3>
-            <p class="node-desc">Набор инженерных утилит для веб-разработки.</p>
-        </a>
-
-        <a href="https://calendar.neuron-p2p.ru" class="node-card" target="_blank">
-            <div class="node-icon"><i class="fas fa-calendar-day"></i></div>
-            <h3 class="node-title">Neuron Calendar</h3>
-            <p class="node-desc">Ваш тайм-менеджмент в защищенном контуре.</p>
-        </a>
-
-        <a href="https://study.neuron-p2p.ru" class="node-card" target="_blank">
-            <div class="node-icon"><i class="fas fa-graduation-cap"></i></div>
-            <h3 class="node-title">Neuron Study</h3>
-            <p class="node-desc">Образовательная платформа нового поколения.</p>
-        </a>
-
-        <a href="https://budget.neuron-p2p.ru" class="node-card" target="_blank">
-            <div class="node-icon"><i class="fas fa-wallet"></i></div>
-            <h3 class="node-title">Neuron Budget</h3>
-            <p class="node-desc">Контроль финансов и аналитика ваших накоплений.</p>
-        </a>
-
-        <a href="https://game-hub.neuron-p2p.ru" class="node-card" target="_blank">
-            <div class="node-icon"><i class="fas fa-gamepad"></i></div>
-            <h3 class="node-title">Game Hub</h3>
-            <p class="node-desc">Развлекательный сегмент экосистемы Neuron.</p>
-        </a>
-
-        <a href="https://password-generator.neuron-p2p.ru" class="node-card" target="_blank">
-            <div class="node-icon"><i class="fas fa-key"></i></div>
-            <h3 class="node-title">Password Gen</h3>
-            <p class="node-desc">Генератор криптостойких паролей.</p>
-        </a>
-
-        <a href="studio.html" class="node-card">
-            <div class="node-icon"><i class="fas fa-palette"></i></div>
-            <h3 class="node-title">Digital Studio</h3>
-            <p class="node-desc">Дизайн и разработка сложных систем.</p>
-        </a>
-
-        <a href="https://ifwhat.ru" class="node-card" target="_blank">
-            <div class="node-icon"><i class="fas fa-infinity"></i></div>
-            <h3 class="node-title">What If</h3>
-            <p class="node-desc">Исследование альтернативных сценариев реальности.</p>
-        </a>
-    </div>
+    <div class="services-grid" id="main-grid">
+        </div>
 </div>
 
 <div id="search-modal" onclick="toggleSearch()">
     <div class="search-container" onclick="event.stopPropagation()">
-        <input type="text" class="search-input" id="search-input" placeholder="Поиск сервиса (например: 'AI')...">
+        <input type="text" class="search-input" id="search-input" placeholder="Что вы ищете?" autocomplete="off">
+        <div class="suggestions-box" id="suggestions"></div>
     </div>
 </div>
 
-<div class="mic-btn" id="mic-btn" onclick="toggleVoice()">
-    <i class="fas fa-microphone"></i>
-</div>
+<div class="mic-btn" id="mic-btn" onclick="toggleVoice()"><i class="fas fa-microphone"></i></div>
 
 <script>
-    // 1. NEURAL MESH (Canvas Engine)
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-    const particleCount = 70;
+    // --- БАЗА ДАННЫХ СЕРВИСОВ И СИНОНИМОВ ---
+    const services = [
+        { name: "Neuron Status", url: "https://status.neuron-p2p.ru", icon: "fa-signal", desc: "Мониторинг узлов сети.", tags: ["статус", "работа", "сервер", "пингуй", "проверка", "status"] },
+        { name: "Neuron AI", url: "https://neuron-ai-eta.vercel.app/", icon: "fa-robot", desc: "Ядро интеллекта.", tags: ["ии", "искусственный интеллект", "ai", "нейросеть", "нейронка", "нейро", "бот", "гпт", "gpt"] },
+        { name: "Neuron Link", url: "https://link.neuron-p2p.ru", icon: "fa-shield-alt", desc: "Безопасный транзит.", tags: ["линк", "ссылка", "аноним", "переход", "безопасность", "link", "hide"] },
+        { name: "Synapse", url: "https://synapse.neuron-p2p.ru", icon: "fa-network-wired", desc: "P2P мессенджер.", tags: ["чат", "мессенджер", "синапс", "связь", "общение", "messenger", "chat"] },
+        { name: "Neuron Notes", url: "https://ifwhat.ru", icon: "fa-sticky-note", desc: "Облачные заметки.", tags: ["заметки", "блокнот", "запиши", "текст", "notes", "write"] },
+        { name: "Neuron Converter", url: "https://converter.neuron-p2p.ru", icon: "fa-exchange-alt", desc: "Конвертер величин.", tags: ["конвертер", "валюта", "деньги", "метры", "перевод", "единицы"] },
+        { name: "Neuron Tools", url: "https://tools.neuron-p2p.ru", icon: "fa-tools", desc: "Инструменты разработки.", tags: ["тулс", "инструменты", "утилиты", "разработка", "tools", "dev"] },
+        { name: "Neuron Budget", url: "https://budget.neuron-p2p.ru", icon: "fa-wallet", desc: "Финансовый трекер.", tags: ["бюджет", "деньги", "финансы", "кошелек", "траты", "счет", "budget", "money"] },
+        { name: "Study Hub", url: "https://study.neuron-p2p.ru", icon: "fa-graduation-cap", desc: "Учеба и расписание.", tags: ["учеба", "школа", "универ", "урок", "расписание", "дз", "study", "learn"] },
+        { name: "Game Hub", url: "https://game-hub.neuron-p2p.ru", icon: "fa-gamepad", desc: "Игровой портал.", tags: ["игры", "гейм", "развлечения", "играть", "game", "play"] },
+        { name: "Password Gen", url: "https://password-generator.neuron-p2p.ru", icon: "fa-key", desc: "Генератор ключей.", tags: ["пароль", "безопасность", "ключ", "генератор", "password", "gen"] },
+        { name: "What If", url: "https://ifwhat.ru", icon: "fa-infinity", desc: "Альтернативная реальность.", tags: ["что если", "история", "реальность", "сценарии", "if", "what"] }
+    ];
 
-    function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
+    // --- ОТРИСОВКА ГЛАВНОЙ СЕТКИ ---
+    const grid = document.getElementById('main-grid');
+    services.forEach(s => {
+        grid.innerHTML += `
+            <a href="${s.url}" class="node-card" target="_blank">
+                <div class="node-icon"><i class="fas ${s.icon}"></i></div>
+                <h3 class="node-title">${s.name}</h3>
+                <p class="node-desc">${s.desc}</p>
+                ${s.name === 'Neuron Status' ? '<div class="status-indicator"><div class="pulse-dot"></div> Operational</div>' : ''}
+            </a>`;
+    });
 
-    class Particle {
-        constructor() {
-            this.x = Math.random() * canvas.width;
-            this.y = Math.random() * canvas.height;
-            this.vx = (Math.random() - 0.5) * 0.4;
-            this.vy = (Math.random() - 0.5) * 0.4;
-            this.radius = Math.random() * 1.5;
-        }
-        update() {
-            this.x += this.vx; this.y += this.vy;
-            if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-            if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-        }
-        draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(255, 140, 0, 0.4)';
-            ctx.fill();
-        }
-    }
+    // --- ЛОГИКА ПОИСКА С ПОДСКАЗКАМИ ---
+    const searchInput = document.getElementById('search-input');
+    const suggestions = document.getElementById('suggestions');
 
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach((p, i) => {
-            p.update(); p.draw();
-            for (let j = i + 1; j < particles.length; j++) {
-                const dx = p.x - particles[j].x;
-                const dy = p.y - particles[j].y;
-                const dist = Math.sqrt(dx*dx + dy*dy);
-                if (dist < 180) {
-                    ctx.beginPath();
-                    ctx.strokeStyle = `rgba(255, 140, 0, ${0.15 * (1 - dist/180)})`;
-                    ctx.lineWidth = 0.8;
-                    ctx.moveTo(p.x, p.y); ctx.lineTo(particles[j].x, particles[j].y);
-                    ctx.stroke();
-                }
-            }
+    searchInput.addEventListener('input', () => {
+        const val = searchInput.value.toLowerCase();
+        suggestions.innerHTML = '';
+        if (!val) return;
+
+        const filtered = services.filter(s => 
+            s.name.toLowerCase().includes(val) || 
+            s.tags.some(tag => tag.includes(val))
+        );
+
+        filtered.forEach(s => {
+            const div = document.createElement('div');
+            div.className = 'suggestion-item';
+            div.innerHTML = `<i class="fas ${s.icon}"></i> <span>${s.name}</span>`;
+            div.onclick = () => window.open(s.url, '_blank');
+            suggestions.appendChild(div);
         });
-        requestAnimationFrame(animate);
-    }
+    });
 
-    window.addEventListener('resize', resize);
-    resize();
-    for(let i=0; i<particleCount; i++) particles.push(new Particle());
-    animate();
-
-    // 2. Command Menu (Ctrl + K)
     function toggleSearch() {
         const modal = document.getElementById('search-modal');
         modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
-        if (modal.style.display === 'flex') document.getElementById('search-input').focus();
+        if (modal.style.display === 'flex') {
+            searchInput.value = '';
+            suggestions.innerHTML = '';
+            setTimeout(() => searchInput.focus(), 10);
+        }
     }
 
-    window.addEventListener('keydown', (e) => {
+    window.addEventListener('keydown', e => {
         if (e.ctrlKey && e.key === 'k') { e.preventDefault(); toggleSearch(); }
-        if (e.key === 'Escape') { document.getElementById('search-modal').style.display = 'none'; }
+        if (e.key === 'Escape') document.getElementById('search-modal').style.display = 'none';
     });
 
-    // 3. Voice Control
+    // --- ПРОДВИНУТЫЙ ГОЛОСОВОЙ ПОИСК ---
     const micBtn = document.getElementById('mic-btn');
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.lang = 'ru-RU';
+    recognition.interimResults = false;
 
     function toggleVoice() {
         try { recognition.start(); } catch(e) { recognition.stop(); }
@@ -404,13 +190,45 @@
 
     recognition.onstart = () => micBtn.classList.add('active');
     recognition.onend = () => micBtn.classList.remove('active');
+
     recognition.onresult = (e) => {
-        const transcript = e.results[0][0].transcript.toLowerCase();
-        if (transcript.includes('статус')) window.open('https://status.neuron-p2p.ru', '_blank');
-        if (transcript.includes('ии') || transcript.includes('интеллект')) window.open('https://neuron-ai-eta.vercel.app/', '_blank');
-        if (transcript.includes('заметки')) window.location.href = 'notes.html';
-        if (transcript.includes('линк')) window.open('https://link.neuron-p2p.ru', '_blank');
+        const speech = e.results[0][0].transcript.toLowerCase();
+        console.log("Распознано:", speech);
+
+        // Поиск совпадений по тегам в базе данных
+        const matchedService = services.find(s => 
+            speech.includes(s.name.toLowerCase()) || 
+            s.tags.some(tag => speech.includes(tag))
+        );
+
+        if (matchedService) {
+            window.open(matchedService.url, '_blank');
+        } else {
+            alert("Команда не распознана. Попробуйте назвать сервис по-другому.");
+        }
     };
+
+    // --- CANVAS BACKGROUND (Neural Mesh) ---
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let pts = [];
+    function res() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    window.addEventListener('resize', res); res();
+    for(let i=0; i<80; i++) pts.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, vx:(Math.random()-0.5)*0.5, vy:(Math.random()-0.5)*0.5});
+    function anim() {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        pts.forEach((p,i) => {
+            p.x+=p.vx; p.y+=p.vy;
+            if(p.x<0||p.x>canvas.width) p.vx*=-1; if(p.y<0||p.y>canvas.height) p.vy*=-1;
+            ctx.fillStyle = 'rgba(255,140,0,0.3)'; ctx.beginPath(); ctx.arc(p.x,p.y,1.5,0,Math.PI*2); ctx.fill();
+            for(let j=i+1; j<pts.length; j++) {
+                const d = Math.hypot(p.x-pts[j].x, p.y-pts[j].y);
+                if(d<150) { ctx.strokeStyle=`rgba(255,140,0,${0.2*(1-d/150)})`; ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(pts[j].x,pts[j].y); ctx.stroke(); }
+            }
+        });
+        requestAnimationFrame(anim);
+    }
+    anim();
 </script>
 
 </body>
