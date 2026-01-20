@@ -214,10 +214,21 @@
 
 <script>
     const services = [
-        { name: "Neuron AI", url: "https://neuron-ai-eta.vercel.app/", icon: "fa-robot", desc: "Центральный узел ИИ.", tags: ["ии", "ai", "нейронка"] },
-        { name: "Neuron Status", url: "https://status.neuron-p2p.ru", icon: "fa-signal", desc: "Мониторинг систем.", tags: ["статус", "работа"] },
-        { name: "Neuron Budget", url: "https://budget.neuron-p2p.ru", icon: "fa-wallet", desc: "Учет финансов.", tags: ["деньги", "бюджет"] },
-        { name: "What If", url: "https://ifwhat.ru", icon: "fa-infinity", desc: "Анализ сценариев.", tags: ["что если"] }
+        { name: "Neuron Status", url: "https://status.neuron-p2p.ru", icon: "fa-signal", desc: "Живой мониторинг аптайма всех систем экосистемы.", tags: ["статус", "онлайн", "status", "работа", "мониторинг", "раб"] }, 
+        { name: "Neuron AI", url: "https://neuron-ai-eta.vercel.app/", icon: "fa-robot", desc: "Нейросетевой хаб для генерации и анализа данных.", tags: ["ии", "ai", "нейросеть", "нейронка", "гпт", "нейро", "иишка", "генерация"] }, 
+        { name: "Neuron Notes", url: "notes.html", icon: "fa-sticky-note", desc: "Безопасное хранилище ваших идей и черновиков.", tags: ["заметки", "блокнот", "текст", "запиши", "напиши", "заметочка", "заметка", "метка", "меточка"] }, 
+        { name: "Neuron Converter", url: "https://converter.neuron-p2p.ru", icon: "fa-exchange-alt", desc: "Быстрая конвертация любых величин и валют.", tags: ["конвертер", "валюта", "деньги", "перевод"] }, 
+        { name: "Digital Studio", url: "studio.html", icon: "fa-palette", desc: "Создание интерфейсов и цифрового искусства.", tags: ["студия", "дизайн", "studio", "сайт", "домен"] }, 
+        { name: "Neuron Tools", url: "https://tools.neuron-p2p.ru", icon: "fa-tools", desc: "Инструментарий для разработчиков и инженеров.", tags: ["тулс", "инструменты", "tools", "инструмент"] }, 
+        { name: "Neuron Budget", url: "https://budget.neuron-p2p.ru", icon: "fa-wallet", desc: "Учет личных финансов в защищенном контуре.", tags: ["бюджет", "деньги", "кошелек", "траты", "операции", "операция", "аналитика"] }, 
+        { name: "Neuron Study", url: "https://study.neuron-p2p.ru", icon: "fa-graduation-cap", desc: "Платформа для обучения и хранения знаний.", tags: ["учеба", "школа", "лекции", "учится", "дз", "домашнее задание", "school"] }, 
+        { name: "Neuron Link", url: "https://link.neuron-p2p.ru", icon: "fa-shield-alt", desc: "Сервис для анонимизации и защиты внешних ссылок.", tags: ["линк", "ссылка", "безопасность", "тег"] }, 
+        { name: "Neuron Calendar", url: "https://calendar.neuron-p2p.ru", icon: "fa-calendar-alt", desc: "Планировщик задач с синхронизацией узлов.", tags: ["календарь", "время", "планы", "план", "планировщик", "событие"] }, 
+        { name: "Game Hub", url: "https://game-hub.neuron-p2p.ru", icon: "fa-gamepad", desc: "Игровой сегмент для отдыха внутри системы.", tags: ["игры", "гейм", "отдых", "игра", "пазл", "пазлы", "печать", "2048"] }, 
+        { name: "Pass Generator", url: "https://password-generator.neuron-p2p.ru", icon: "fa-key", desc: "Создание паролей с максимальной энтропией.", tags: ["пароль", "безопасность", "ключ", "пароли", "пас", "пасс", "pass", "password"] }, 
+        { name: "Neuron Synapse", url: "https://synapse.neuron-p2p.ru", icon: "fa-network-wired", desc: "Шифрованный протокол связи между пользователями.", tags: ["чат", "связь", "синапс", "аноним", "разговор", "писать"] }, 
+        { name: "What If", url: "https://ifwhat.ru", icon: "fa-infinity", desc: "Анализ альтернативных сценариев и гипотез.", tags: ["что если", "история", "сценарии", "вдруг", "гипотеза", "сценарий", "альтернатива"] },
+        { name: "Донат", url: "https://yoomoney.ru/to/4100119394883694", icon: "fa-heart", desc: "Поддержать проект.", tags: ["донат", "деньги", "donate", "пожертвование", "помощь", "помочь", "help"] }
     ];
 
     const ALL_NEWS = [
