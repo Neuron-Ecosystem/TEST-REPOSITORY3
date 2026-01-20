@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neuron Ecosystem | Neural Mesh 2026</title>
+    <title>Neuron Ecosystem | Main Node</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -26,15 +26,15 @@
         }
 
         #canvas { position: fixed; top: 0; left: 0; z-index: -1; filter: blur(0.4px); }
-
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 
-        /* HEADER ANIMATION */
+        /* HEADER */
         .header-ui {
             display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;
-            backdrop-filter: blur(20px); padding: 20px 30px; border-radius: 24px;
+            backdrop-filter: blur(25px); padding: 20px 30px; border-radius: 24px;
             border: 1px solid var(--glass-border); background: var(--glass);
             animation: slideDown 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+            position: relative; z-index: 2000;
         }
 
         .logo-box { display: flex; align-items: center; gap: 15px; }
@@ -42,7 +42,38 @@
 
         .nav-actions { display: flex; gap: 15px; align-items: center; }
 
-        /* Кнопки с эффектом свечения */
+        /* КОЛОКОЛЬЧИК И УВЕДОМЛЕНИЯ */
+        .notification-container { position: relative; }
+        .notification-bell {
+            background: none; border: none; color: var(--text-dim);
+            font-size: 1.4rem; cursor: pointer; transition: 0.3s; padding: 5px;
+        }
+        .bell-dot {
+            position: absolute; top: 5px; right: 5px; width: 10px; height: 10px;
+            background: #ff4444; border-radius: 50%; border: 2px solid var(--bg); display: none;
+            box-shadow: 0 0 10px #ff4444;
+        }
+
+        .news-dropdown {
+            position: absolute;
+            top: calc(100% + 15px);
+            right: 0;
+            width: 320px;
+            background: #0a0b14;
+            border: 1px solid var(--accent);
+            border-radius: 20px;
+            backdrop-filter: blur(30px);
+            display: none;
+            flex-direction: column;
+            z-index: 9999;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+        }
+        .news-dropdown.show { display: flex; animation: slideDown 0.3s ease; }
+        .news-item { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .news-date { font-size: 0.7rem; color: var(--accent); font-weight: bold; display: block; margin-bottom: 5px; }
+        .news-text { font-size: 0.85rem; line-height: 1.4; color: var(--text-dim); }
+
+        /* КНОПКИ */
         .btn-donate {
             background: var(--accent); color: #000; border: none; padding: 12px 24px; 
             border-radius: 14px; font-weight: 800; cursor: pointer; transition: all 0.4s;
@@ -55,86 +86,73 @@
             padding: 12px 24px; border-radius: 14px; color: var(--text-dim);
             cursor: pointer; display: flex; align-items: center; gap: 15px; transition: 0.3s;
         }
-        .search-trigger:hover { border-color: var(--accent); background: rgba(255,255,255,0.05); }
 
-        /* GRID & CARDS ANIMATION */
+        /* СЕТКА СЕРВИСОВ */
         .services-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-            gap: 25px; 
-            margin-bottom: 60px; 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 25px; margin-bottom: 40px; position: relative; z-index: 1;
         }
 
         .node-card {
-            background: var(--glass); 
-            backdrop-filter: blur(25px); 
-            border: 1px solid var(--glass-border);
-            border-radius: 28px; 
-            padding: 30px; 
-            text-decoration: none; 
-            color: inherit;
-            display: flex; 
-            flex-direction: column; 
-            height: 100%;
+            background: var(--glass); backdrop-filter: blur(25px); border: 1px solid var(--glass-border);
+            border-radius: 28px; padding: 30px; text-decoration: none; color: inherit;
             transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             animation: fadeInUp 0.6s ease backwards;
-            position: relative;
-            overflow: hidden;
         }
-
-        /* Блик при наведении */
-        .node-card::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-            transition: 0.5s;
-        }
-
         .node-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-12px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(255, 140, 0, 0.1);
+            border-color: var(--accent); transform: translateY(-12px);
             background: rgba(255, 255, 255, 0.05);
         }
-        .node-card:hover::before { left: 100%; }
-
-        .node-icon { 
-            font-size: 2.2rem; color: var(--accent); margin-bottom: 20px; 
-            transition: transform 0.4s ease;
-        }
-        .node-card:hover .node-icon { transform: scale(1.2) rotate(5deg); }
-
+        .node-icon { font-size: 2.2rem; color: var(--accent); margin-bottom: 20px; }
         .node-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 12px; }
         .node-desc { font-size: 0.95rem; color: var(--text-dim); line-height: 1.6; }
+
+        /* НИЖНИЙ ЖУРНАЛ */
+        .news-widget {
+            background: var(--glass); border: 1px solid var(--glass-border);
+            border-radius: 28px; padding: 30px; margin-bottom: 60px;
+            animation: fadeInUp 0.8s ease backwards;
+        }
+        .news-widget-header { color: var(--accent); font-weight: 800; margin-bottom: 20px; letter-spacing: 2px; font-size: 0.9rem; }
+        .news-widget-item { display: flex; gap: 20px; padding: 15px; background: rgba(255,255,255,0.02); border-radius: 18px; margin-bottom: 10px; }
+        .news-widget-date { min-width: 130px; font-size: 0.75rem; color: var(--accent); font-weight: bold; }
 
         /* FOOTER */
         .footer { 
             text-align: center; padding: 50px 20px; border-top: 1px solid var(--glass-border);
             backdrop-filter: blur(15px); background: var(--glass); border-radius: 40px 40px 0 0;
         }
-        .social-link { 
-            font-size: 2rem; margin: 0 15px; color: var(--text); transition: 0.4s; 
-            display: inline-block;
-        }
-        .social-link:hover { color: var(--accent); transform: translateY(-5px) scale(1.2); }
+        .social-link { font-size: 2rem; margin: 0 15px; color: var(--text); transition: 0.4s; display: inline-block; }
+        .social-link:hover { color: var(--accent); transform: translateY(-5px); }
 
-        /* КРАСИВЫЕ АНИМАЦИИ */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* МИКРОФОН */
+        .mic-btn {
+            position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px;
+            background: var(--accent); border-radius: 50%; display: flex;
+            justify-content: center; align-items: center; cursor: pointer;
+            z-index: 5000; box-shadow: 0 10px 30px var(--accent-glow); transition: 0.3s;
         }
 
-        /* Задержки для появления карточек (шахматный порядок) */
-        .node-card:nth-child(n) { animation-delay: calc(var(--i) * 0.05s); }
+        /* АНИМАЦИИ */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Мобильные правки: отключаем тяжелые эффекты для скорости */
+        /* АДАПТАЦИЯ ТЕЛЕФОНОВ */
         @media (max-width: 768px) {
-            .node-card:hover { transform: translateY(-5px); }
-            .header-ui { padding: 15px; flex-direction: column; }
-            .nav-actions { width: 100%; justify-content: center; }
+            .header-ui { padding: 15px 20px; }
+            .logo-text { font-size: 1.1rem; letter-spacing: 2px; }
+            .search-trigger span { display: none; }
+            
+            .news-dropdown {
+                position: absolute;
+                top: 65px;
+                right: -10px;
+                width: calc(100vw - 40px);
+                max-width: 340px;
+                transform: none !important;
+            }
+
+            .news-widget-item { flex-direction: column; gap: 5px; }
         }
     </style>
 </head>
@@ -149,14 +167,28 @@
             <span class="logo-text">Neuron</span>
         </div>
         <div class="nav-actions">
-            <div class="search-trigger" onclick="toggleSearch()">
-                <i class="fas fa-search"></i> <span>Поиск по узлам</span>
+            <div class="search-trigger" onclick="toggleSearch()"><i class="fas fa-search"></i> <span>Поиск</span></div>
+            <div class="notification-container">
+                <button class="notification-bell" onclick="toggleNewsDropdown()">
+                    <i class="fas fa-bell"></i>
+                    <span class="bell-dot" id="bell-dot"></span>
+                </button>
+                <div class="news-dropdown" id="news-dropdown">
+                    <div id="news-list"></div>
+                </div>
             </div>
             <button class="btn-donate" onclick="toggleDonate()">Поддержать</button>
         </div>
     </header>
 
     <div class="services-grid" id="main-grid"></div>
+
+    <section class="news-section">
+        <div class="news-widget">
+            <div class="news-widget-header"><i class="fas fa-bolt"></i> ЖУРНАЛ СОБЫТИЙ</div>
+            <div id="news-widget-list"></div>
+        </div>
+    </section>
 
     <footer class="footer">
         <div class="social-icons">
@@ -165,149 +197,117 @@
             <a href="https://www.tiktok.com/@neuron_eco" target="_blank" class="social-link"><i class="fab fa-tiktok"></i></a>
             <div class="social-link" onclick="copyEmail()" style="cursor:pointer"><i class="fas fa-envelope"></i></div>
         </div>
-        <p style="margin-top:20px; opacity:0.3; letter-spacing:3px">BUILDING FUTURE ECOSYSTEM</p>
+        <p style="margin-top:20px; opacity:0.3; letter-spacing:3px">NEURON ECOSYSTEM 2026</p>
     </footer>
 </div>
 
-<div class="modal-overlay" id="donate-modal" onclick="toggleDonate()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:2000; justify-content:center; align-items:center; backdrop-filter:blur(10px);">
-    <div class="modal-content" onclick="event.stopPropagation()" style="background:#0a0b14; border:1px solid var(--accent); padding:40px; border-radius:30px; text-align:center; box-shadow:0 0 50px rgba(255,140,0,0.2)">
-        <h2 style="color:var(--accent)">Поддержка проекта</h2>
-        <p style="margin:15px 0; color:var(--text-dim)">Все средства пойдут на развитие серверов и новые ИИ-модели ❤️</p>
-        <button class="btn-donate" style="width:100%; padding:15px" onclick="window.open('https://yoomoney.ru/to/4100119394883694', '_blank')">Перейти к оплате</button>
-    </div>
-</div>
-
-<div id="search-modal" onclick="toggleSearch()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(5,5,10,0.98); z-index:3000; justify-content:center; padding-top:10vh;">
+<div id="search-modal" onclick="toggleSearch()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(5,5,10,0.98); z-index:10000; justify-content:center; padding-top:10vh;">
     <div class="search-container" onclick="event.stopPropagation()" style="width:90%; max-width:700px">
-        <input type="text" class="search-input" id="search-input" placeholder="Введите команду (например: 'ии' или 'донат')..." style="width:100%; background:rgba(255,255,255,0.05); border:2px solid var(--accent); color:#fff; padding:20px; border-radius:20px; font-size:1.4rem; outline:none; box-shadow:0 0 30px var(--accent-glow)">
-        <div id="suggestions" style="margin-top:20px; border-radius:20px; overflow:hidden"></div>
+        <input type="text" id="search-input" placeholder="Поиск..." style="width:100%; background:rgba(255,255,255,0.05); border:2px solid var(--accent); color:#fff; padding:20px; border-radius:20px; font-size:1.4rem; outline:none;">
+        <div id="suggestions" style="margin-top:20px; border-radius:20px; overflow:hidden;"></div>
     </div>
 </div>
 
-<div class="mic-btn" id="mic-btn" onclick="toggleVoice()" style="position:fixed; bottom:30px; right:30px; width:70px; height:70px; background:var(--accent); border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer; z-index:1000; transition:0.3s; box-shadow:0 10px 30px var(--accent-glow)">
+<div class="mic-btn" id="mic-btn" onclick="toggleVoice()">
     <i class="fas fa-microphone" style="color:#000; font-size:1.5rem"></i>
 </div>
 
 <script>
     const services = [
-        { name: "Neuron Status", url: "https://status.neuron-p2p.ru", icon: "fa-signal", desc: "Живой мониторинг аптайма всех систем экосистемы.", tags: ["статус", "онлайн", "status", "работа", "мониторинг", "раб"] },
-        { name: "Neuron AI", url: "https://neuron-ai-eta.vercel.app/", icon: "fa-robot", desc: "Нейросетевой хаб для генерации и анализа данных.", tags: ["ии", "ai", "нейросеть", "нейронка", "гпт", "нейро", "иишка", "генерация"] },
-        { name: "Neuron Notes", url: "notes.html", icon: "fa-sticky-note", desc: "Безопасное хранилище ваших идей и черновиков.", tags: ["заметки", "блокнот", "текст", "запиши", "напиши", "заметочка", "заметка", "метка", "меточка"] },
-        { name: "Neuron Converter", url: "https://converter.neuron-p2p.ru", icon: "fa-exchange-alt", desc: "Быстрая конвертация любых величин и валют.", tags: ["конвертер", "валюта", "деньги", "перевод"] },
-        { name: "Digital Studio", url: "studio.html", icon: "fa-palette", desc: "Создание интерфейсов и цифрового искусства.", tags: ["студия", "дизайн", "studio", "сайт", "домен"] },
-        { name: "Neuron Tools", url: "https://tools.neuron-p2p.ru", icon: "fa-tools", desc: "Инструментарий для разработчиков и инженеров.", tags: ["тулс", "инструменты", "tools", "инструмент"] },
-        { name: "Neuron Budget", url: "https://budget.neuron-p2p.ru", icon: "fa-wallet", desc: "Учет личных финансов в защищенном контуре.", tags: ["бюджет", "деньги", "кошелек", "траты", "операции", "операция", "аналитика"] },
-        { name: "Neuron Study", url: "https://study.neuron-p2p.ru", icon: "fa-graduation-cap", desc: "Платформа для обучения и хранения знаний.", tags: ["учеба", "школа", "лекции", "учится", "дз", "домашнее задание", "school"] },
-        { name: "Neuron Link", url: "https://link.neuron-p2p.ru", icon: "fa-shield-alt", desc: "Сервис для анонимизации и защиты внешних ссылок.", tags: ["линк", "ссылка", "безопасность", "тег"] },
-        { name: "Neuron Calendar", url: "https://calendar.neuron-p2p.ru", icon: "fa-calendar-alt", desc: "Планировщик задач с синхронизацией узлов.", tags: ["календарь", "время", "планы", "план", "планировщик", "событие"] },
-        { name: "Game Hub", url: "https://game-hub.neuron-p2p.ru", icon: "fa-gamepad", desc: "Игровой сегмент для отдыха внутри системы.", tags: ["игры", "гейм", "отдых", "игра", "пазл", "пазлы", "печать", "2048"] },
-        { name: "Pass Generator", url: "https://password-generator.neuron-p2p.ru", icon: "fa-key", desc: "Создание паролей с максимальной энтропией.", tags: ["пароль", "безопасность", "ключ", "пароли", "пас", "пасс", "pass", "password"] },
-        { name: "Neuron Synapse", url: "https://synapse.neuron-p2p.ru", icon: "fa-network-wired", desc: "Шифрованный протокол связи между пользователями.", tags: ["чат", "связь", "синапс", "аноним", "разговор", "писать"] },
-        { name: "What If", url: "https://ifwhat.ru", icon: "fa-infinity", desc: "Анализ альтернативных сценариев и гипотез.", tags: ["что если", "история", "сценарии", "вдруг", "гипотеза", "сценарий", "альтернатива"] },
-        { name: "Донат", url: "https://yoomoney.ru/to/4100119394883694", icon: "fa-heart", desc: "Поддержать проект.", tags: ["донат", "деньги", "donate", "пожертвование", "помощь", "помочь", "help"] }
+        { name: "Neuron AI", url: "https://neuron-ai-eta.vercel.app/", icon: "fa-robot", desc: "Центральный узел ИИ.", tags: ["ии", "ai", "нейронка"] },
+        { name: "Neuron Status", url: "https://status.neuron-p2p.ru", icon: "fa-signal", desc: "Мониторинг систем.", tags: ["статус", "работа"] },
+        { name: "Neuron Budget", url: "https://budget.neuron-p2p.ru", icon: "fa-wallet", desc: "Учет финансов.", tags: ["деньги", "бюджет"] },
+        { name: "What If", url: "https://ifwhat.ru", icon: "fa-infinity", desc: "Анализ сценариев.", tags: ["что если"] }
     ];
 
-    const grid = document.getElementById('main-grid');
-    services.forEach((s, index) => {
-        grid.innerHTML += `
-            <a href="${s.url}" class="node-card" target="_blank" style="--i: ${index}">
+    const ALL_NEWS = [
+        { id: 3, date: "20.01.2026 | 21:55", text: "Исправлено положение уведомлений на мобильных устройствах — теперь ровно под колокольчиком." },
+        { id: 2, date: "20.01.2026 | 21:00", text: "Добавлен нижний виджет истории обновлений." },
+        { id: 1, date: "20.01.2026 | 12:00", text: "Запуск Neuron 2.0 Mesh UI." }
+    ];
+
+    function init() {
+        const grid = document.getElementById('main-grid');
+        grid.innerHTML = services.map((s, i) => `
+            <a href="${s.url}" class="node-card" target="_blank" style="--i: ${i}">
                 <div class="node-icon"><i class="fas ${s.icon}"></i></div>
                 <h3 class="node-title">${s.name}</h3>
                 <p class="node-desc">${s.desc}</p>
-                ${s.name === 'Neuron Status' ? '<div style="color:#00ff88; font-size:0.75rem; margin-top:15px; font-weight:bold; display:flex; align-items:center; gap:8px"><span style="width:8px; height:8px; background:#00ff88; border-radius:50%; box-shadow:0 0 10px #00ff88"></span> СИСТЕМЫ АКТИВНЫ</div>' : ''}
-            </a>`;
-    });
+            </a>
+        `).join('');
 
-    // --- LOGIC ---
-    function toggleDonate() {
-        const m = document.getElementById('donate-modal');
-        m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
+        const list = document.getElementById('news-list');
+        const widget = document.getElementById('news-widget-list');
+        list.innerHTML = ALL_NEWS.slice(0, 3).map(n => `<div class="news-item"><span class="news-date">${n.date}</span><div class="news-text">${n.text}</div></div>`).join('');
+        widget.innerHTML = ALL_NEWS.slice(0, 3).map(n => `<div class="news-widget-item"><div class="news-widget-date">${n.date}</div><div class="news-widget-text">${n.text}</div></div>`).join('');
+
+        if (ALL_NEWS[0].id > (localStorage.getItem('last_news_id') || 0)) document.getElementById('bell-dot').style.display = 'block';
     }
 
-    function toggleSearch() {
-        const modal = document.getElementById('search-modal');
-        modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
-        if (modal.style.display === 'flex') document.getElementById('search-input').focus();
-    }
-
-    // Поиск
     document.getElementById('search-input').addEventListener('input', (e) => {
         const val = e.target.value.toLowerCase();
         const res = document.getElementById('suggestions');
         res.innerHTML = '';
         if(!val) return;
-        
-        services.filter(s => s.name.toLowerCase().includes(val) || s.tags.some(t => t.includes(val)) || (val === 'донат'))
-            .forEach(s => {
-                const item = document.createElement('div');
-                item.style.padding = '20px';
-                item.style.background = 'rgba(255,255,255,0.05)';
-                item.style.cursor = 'pointer';
-                item.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
-                item.innerHTML = `<i class="fas ${s.icon}" style="color:var(--accent); margin-right:15px"></i> ${s.name}`;
-                item.onclick = () => window.open(val === 'донат' ? 'https://yoomoney.ru/to/4100119394883694' : s.url, '_blank');
-                res.appendChild(item);
-            });
+        services.filter(s => s.name.toLowerCase().includes(val) || s.tags.some(t => t.includes(val))).forEach(s => {
+            const div = document.createElement('div');
+            div.style.padding = '15px'; div.style.background = 'rgba(255,255,255,0.05)'; div.style.cursor = 'pointer';
+            div.innerHTML = `<i class="fas ${s.icon}" style="color:var(--accent); margin-right:15px"></i> ${s.name}`;
+            div.onclick = () => window.open(s.url, '_blank');
+            res.appendChild(div);
+        });
     });
 
-    // Голос
+    function toggleNewsDropdown() {
+        const d = document.getElementById('news-dropdown');
+        d.classList.toggle('show');
+        if(d.classList.contains('show')) {
+            document.getElementById('bell-dot').style.display = 'none';
+            localStorage.setItem('last_news_id', ALL_NEWS[0].id);
+        }
+    }
+
+    function toggleSearch() {
+        const m = document.getElementById('search-modal');
+        m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
+        if(m.style.display === 'flex') document.getElementById('search-input').focus();
+    }
+
+    function toggleDonate() { window.open('https://yoomoney.ru/to/4100119394883694', '_blank'); }
+    function copyEmail() { navigator.clipboard.writeText('wertq6306@gmail.com'); alert('Почта скопирована!'); }
+
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.lang = 'ru-RU';
     function toggleVoice() { try { recognition.start(); } catch(e) {} }
-    recognition.onstart = () => document.getElementById('mic-btn').style.transform = 'scale(1.2) rotate(15deg)';
-    recognition.onend = () => document.getElementById('mic-btn').style.transform = 'scale(1)';
+    recognition.onstart = () => document.getElementById('mic-btn').style.background = '#ff4444';
+    recognition.onend = () => document.getElementById('mic-btn').style.background = 'var(--accent)';
     recognition.onresult = (e) => {
         const speech = e.results[0][0].transcript.toLowerCase();
-        if(speech.includes('донат') || speech.includes('поддержать')) window.open('https://yoomoney.ru/to/4100119394883694', '_blank');
         const found = services.find(s => speech.includes(s.name.toLowerCase()) || s.tags.some(t => speech.includes(t)));
         if(found) window.open(found.url, '_blank');
     };
 
-    function copyEmail() {
-        navigator.clipboard.writeText('wertq6306@gmail.com');
-        alert('Email скопирован!');
-    }
-
-    // CANVAS (Neural Mesh)
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-    let points = [];
+    let pts = [];
     function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-    window.addEventListener('resize', resize);
-    resize();
-
-    for(let i=0; i<80; i++) points.push({
-        x: Math.random()*canvas.width, 
-        y: Math.random()*canvas.height, 
-        vx: (Math.random()-0.5)*0.5, 
-        vy: (Math.random()-0.5)*0.5
-    });
-
+    window.onresize = resize; resize();
+    for(let i=0; i<60; i++) pts.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, vx:(Math.random()-0.5)*0.5, vy:(Math.random()-0.5)*0.5});
     function draw() {
         ctx.clearRect(0,0,canvas.width,canvas.height);
-        points.forEach((p, i) => {
-            p.x += p.vx; p.y += p.vy;
-            if(p.x<0 || p.x>canvas.width) p.vx *= -1;
-            if(p.y<0 || p.y>canvas.height) p.vy *= -1;
-            
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, 1.5, 0, Math.PI*2);
-            ctx.fillStyle = 'rgba(255, 140, 0, 0.4)';
-            ctx.fill();
-
-            for(let j=i+1; j<points.length; j++) {
-                const dist = Math.hypot(p.x-points[j].x, p.y-points[j].y);
-                if(dist < 180) {
-                    ctx.strokeStyle = `rgba(255, 140, 0, ${0.15 * (1 - dist/180)})`;
-                    ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(points[j].x, points[j].y);
-                    ctx.stroke();
-                }
-            }
+        pts.forEach((p, i) => {
+            p.x+=p.vx; p.y+=p.vy;
+            if(p.x<0||p.x>canvas.width) p.vx*=-1; if(p.y<0||p.y>canvas.height) p.vy*=-1;
+            ctx.fillStyle = 'rgba(255,140,0,0.3)'; ctx.beginPath(); ctx.arc(p.x,p.y,1.2,0,Math.PI*2); ctx.fill();
         });
         requestAnimationFrame(draw);
     }
     draw();
-</script>
+    init();
 
+    window.onclick = (e) => {
+        if (!e.target.closest('.notification-container')) document.getElementById('news-dropdown').classList.remove('show');
+    };
+</script>
 </body>
 </html>
