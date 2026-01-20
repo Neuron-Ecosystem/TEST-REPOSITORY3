@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neuron Ecosystem | Neural Mesh 2.0</title>
+    <title>Neuron Ecosystem | Neural Mesh 2026</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -22,7 +22,6 @@
 
         .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
 
-        /* UI Header */
         .header-ui {
             display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px;
             backdrop-filter: blur(15px); padding: 20px 30px; border-radius: 24px;
@@ -31,56 +30,81 @@
         .logo-box { display: flex; align-items: center; gap: 15px; }
         .logo-text { font-size: 1.5rem; font-weight: 800; letter-spacing: 5px; color: var(--accent); text-transform: uppercase; }
 
+        .nav-actions { display: flex; gap: 15px; align-items: center; }
+        .btn-donate {
+            background: var(--accent); color: #000; border: none; padding: 10px 20px; 
+            border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        .btn-donate:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--accent); }
+
         .search-trigger {
             background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border);
-            padding: 12px 24px; border-radius: 14px; color: var(--text-dim);
-            cursor: pointer; display: flex; align-items: center; gap: 20px; transition: 0.3s;
+            padding: 10px 20px; border-radius: 12px; color: var(--text-dim);
+            cursor: pointer; display: flex; align-items: center; gap: 15px;
         }
-        .search-trigger:hover { border-color: var(--accent); }
-        kbd { background: #222; padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; border: 1px solid #444; }
 
-        /* Grid */
-        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 60px; }
+        
         .node-card {
             background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--glass-border);
             border-radius: 24px; padding: 25px; text-decoration: none; color: inherit;
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); display: flex; flex-direction: column;
+            transition: all 0.4s ease; display: flex; flex-direction: column; height: 100%;
         }
-        .node-card:hover { border-color: var(--accent); transform: translateY(-8px); box-shadow: 0 20px 40px rgba(255, 140, 0, 0.15); }
-        .node-icon { font-size: 2rem; color: var(--accent); margin-bottom: 20px; }
-        .node-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 10px; }
-        .node-desc { font-size: 0.9rem; color: var(--text-dim); line-height: 1.5; }
+        .node-card:hover { border-color: var(--accent); transform: translateY(-8px); box-shadow: 0 10px 30px rgba(255, 140, 0, 0.1); }
+        .node-icon { font-size: 2rem; color: var(--accent); margin-bottom: 15px; }
+        .node-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+        .node-desc { font-size: 0.85rem; color: var(--text-dim); line-height: 1.4; flex-grow: 1; }
 
-        /* Status Dot */
-        .status-indicator { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; color: #00ff88; margin-top: 15px; }
+        .status-tag { display: flex; align-items: center; gap: 8px; font-size: 0.7rem; color: #00ff88; margin-top: 15px; font-weight: bold; }
         .pulse-dot { width: 8px; height: 8px; background: #00ff88; border-radius: 50%; animation: pulse 2s infinite; }
 
-        /* ПОИСКОВАЯ СИСТЕМА */
+        .footer { 
+            text-align: center; padding: 40px 0; border-top: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px); background: var(--glass); border-radius: 30px 30px 0 0;
+        }
+        .social-icons { display: flex; justify-content: center; gap: 30px; margin-bottom: 20px; }
+        .social-link { color: var(--text); font-size: 1.8rem; transition: 0.3s; cursor: pointer; text-decoration: none; }
+        .social-link:hover { color: var(--accent); transform: scale(1.2); }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); display: none; justify-content: center;
+            align-items: center; z-index: 2000; backdrop-filter: blur(15px);
+        }
+        .modal-content {
+            background: #10111a; border: 1px solid var(--accent); padding: 40px;
+            border-radius: 24px; text-align: center; max-width: 400px; width: 90%;
+        }
+        .btn-big-donate {
+            background: var(--accent); color: #000; border: none; width: 100%;
+            padding: 15px; border-radius: 12px; font-weight: bold; margin-top: 25px;
+            cursor: pointer; font-size: 1.1rem;
+        }
+
+        .copy-toast {
+            position: fixed; bottom: 110px; left: 50%; transform: translateX(-50%);
+            background: var(--accent); color: #000; padding: 10px 25px;
+            border-radius: 50px; font-weight: bold; display: none; z-index: 3000;
+        }
+
         #search-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 5, 10, 0.98); display: none; justify-content: center;
-            padding-top: 10vh; z-index: 1000; backdrop-filter: blur(15px);
+            background: rgba(5,5,10,0.98); display: none; justify-content: center;
+            padding-top: 10vh; z-index: 1000;
         }
-        .search-container { width: 90%; max-width: 650px; position: relative; }
+        .search-container { width: 90%; max-width: 600px; }
         .search-input {
-            width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--accent);
-            padding: 22px; border-radius: 20px; color: #fff; font-size: 1.4rem; outline: none;
+            width: 100%; background: var(--glass); border: 1px solid var(--accent);
+            padding: 20px; border-radius: 15px; color: #fff; font-size: 1.3rem; outline: none;
         }
-        .suggestions-box {
-            margin-top: 15px; background: rgba(255,255,255,0.03); border-radius: 18px;
-            max-height: 400px; overflow-y: auto; border: 1px solid var(--glass-border);
-        }
-        .suggestion-item {
-            padding: 15px 25px; display: flex; align-items: center; gap: 15px;
-            cursor: pointer; transition: 0.2s; border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .suggestion-item:hover { background: rgba(255, 140, 0, 0.1); color: var(--accent); }
+        .suggestions { margin-top: 10px; background: var(--glass); border-radius: 15px; overflow: hidden; max-height: 60vh; overflow-y: auto; }
+        .s-item { padding: 15px; cursor: pointer; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .s-item:hover { background: rgba(255, 140, 0, 0.1); }
 
-        /* Голос */
         .mic-btn {
             position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px;
             background: var(--accent); border-radius: 50%; display: flex; justify-content: center;
-            align-items: center; cursor: pointer; z-index: 100; transition: 0.3s; color: #000; font-size: 1.5rem;
+            align-items: center; cursor: pointer; z-index: 100; transition: 0.3s; color: #000;
         }
         .mic-btn.active { background: #ff4444; animation: micPulse 1s infinite; }
 
@@ -94,142 +118,151 @@
 
 <div class="container">
     <header class="header-ui">
-        <div class="logo-box"><i class="fas fa-brain" style="color: var(--accent); font-size: 2rem;"></i><span class="logo-text">Neuron</span></div>
-        <div class="search-trigger" onclick="toggleSearch()"><i class="fas fa-search"></i><span>Поиск сервиса...</span><kbd>Ctrl + K</kbd></div>
+        <div class="logo-box">
+            <i class="fas fa-brain" style="color: var(--accent); font-size: 1.8rem;"></i>
+            <span class="logo-text">Neuron</span>
+        </div>
+        <div class="nav-actions">
+            <div class="search-trigger" onclick="toggleSearch()">
+                <i class="fas fa-search"></i> <span>Поиск...</span>
+            </div>
+            <button class="btn-donate" onclick="toggleDonate()">Поддержать проект</button>
+        </div>
     </header>
 
     <div class="services-grid" id="main-grid">
         </div>
+
+    <footer class="footer">
+        <div class="social-icons">
+            <a href="https://t.me/neuron_ecosystem" target="_blank" class="social-link"><i class="fab fa-telegram"></i></a>
+            <a href="https://vk.com/club233118101" target="_blank" class="social-link"><i class="fab fa-vk"></i></a>
+            <a href="https://www.tiktok.com/@neuron_eco" target="_blank" class="social-link"><i class="fab fa-tiktok"></i></a>
+            <div class="social-link" onclick="copyEmail()"><i class="fas fa-envelope"></i></div>
+        </div>
+        <p style="opacity: 0.4; font-size: 0.8rem; letter-spacing: 2px;">NEURON ECOSYSTEM 2026</p>
+    </footer>
 </div>
+
+<div class="modal-overlay" id="donate-modal" onclick="toggleDonate()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <h2>Поддержка</h2>
+        <p>Все средства пойдут на развитие проекта ❤️</p>
+        <button class="btn-big-donate" onclick="window.open('https://yoomoney.ru/to/4100119394883694', '_blank')">Поддержать</button>
+    </div>
+</div>
+
+<div class="copy-toast" id="toast">Email скопирован!</div>
 
 <div id="search-modal" onclick="toggleSearch()">
     <div class="search-container" onclick="event.stopPropagation()">
-        <input type="text" class="search-input" id="search-input" placeholder="Что вы ищете?" autocomplete="off">
-        <div class="suggestions-box" id="suggestions"></div>
+        <input type="text" class="search-input" id="search-input" placeholder="Введите название или команду..." autocomplete="off">
+        <div class="suggestions" id="suggestions"></div>
     </div>
 </div>
 
 <div class="mic-btn" id="mic-btn" onclick="toggleVoice()"><i class="fas fa-microphone"></i></div>
 
 <script>
-    // --- БАЗА ДАННЫХ СЕРВИСОВ И СИНОНИМОВ ---
     const services = [
         { name: "Neuron Status", url: "https://status.neuron-p2p.ru", icon: "fa-signal", desc: "Мониторинг узлов сети.", tags: ["статус", "работа", "сервер", "пингуй", "проверка", "status"] },
+        { name: "Neuron Notes", url: "notes.html", icon: "fa-sticky-note", desc: "Умные заметки для идей.", tags: ["заметки", "блокнот", "запиши", "текст", "notes"] },
+        { name: "Neuron Converter", url: "https://converter.neuron-p2p.ru", icon: "fa-exchange-alt", desc: "Конвертер величин.", tags: ["конвертер", "валюта", "деньги", "метры", "перевод"] },
         { name: "Neuron AI", url: "https://neuron-ai-eta.vercel.app/", icon: "fa-robot", desc: "Ядро интеллекта.", tags: ["ии", "искусственный интеллект", "ai", "нейросеть", "нейронка", "нейро", "бот", "гпт", "gpt"] },
-        { name: "Neuron Link", url: "https://link.neuron-p2p.ru", icon: "fa-shield-alt", desc: "Безопасный транзит.", tags: ["линк", "ссылка", "аноним", "переход", "безопасность", "link", "hide"] },
-        { name: "Synapse", url: "https://synapse.neuron-p2p.ru", icon: "fa-network-wired", desc: "P2P мессенджер.", tags: ["чат", "мессенджер", "синапс", "связь", "общение", "messenger", "chat"] },
-        { name: "Neuron Notes", url: 'notes.html', icon: "fa-sticky-note", desc: "Облачные заметки.", tags: ["заметки", "блокнот", "запиши", "текст", "notes", "write"] },
-        { name: "Neuron Converter", url: "https://converter.neuron-p2p.ru", icon: "fa-exchange-alt", desc: "Конвертер величин.", tags: ["конвертер", "валюта", "деньги", "метры", "перевод", "единицы"] },
-        { name: "Neuron Tools", url: "https://tools.neuron-p2p.ru", icon: "fa-tools", desc: "Инструменты разработки.", tags: ["тулс", "инструменты", "утилиты", "разработка", "tools", "dev"] },
-        { name: "Neuron Budget", url: "https://budget.neuron-p2p.ru", icon: "fa-wallet", desc: "Финансовый трекер.", tags: ["бюджет", "деньги", "финансы", "кошелек", "траты", "счет", "budget", "money"] },
-        { name: "Study Hub", url: "https://study.neuron-p2p.ru", icon: "fa-graduation-cap", desc: "Учеба и расписание.", tags: ["учеба", "школа", "универ", "урок", "расписание", "дз", "study", "learn"] },
-        { name: "Game Hub", url: "https://game-hub.neuron-p2p.ru", icon: "fa-gamepad", desc: "Игровой портал.", tags: ["игры", "гейм", "развлечения", "играть", "game", "play"] },
-        { name: "Password Gen", url: "https://password-generator.neuron-p2p.ru", icon: "fa-key", desc: "Генератор ключей.", tags: ["пароль", "безопасность", "ключ", "генератор", "password", "gen"] },
-        { name: "What If", url: "https://ifwhat.ru", icon: "fa-infinity", desc: "Альтернативная реальность.", tags: ["что если", "история", "реальность", "сценарии", "if", "what"] }
+        { name: "Neuron Digital Studio", url: "studio.html", icon: "fa-palette", desc: "Студия дизайна.", tags: ["студия", "дизайн", "разработка", "studio", "art"] },
+        { name: "Neuron Tools", url: "https://tools.neuron-p2p.ru", icon: "fa-tools", desc: "Полезные утилиты.", tags: ["тулс", "инструменты", "утилиты", "tools", "dev"] },
+        { name: "Neuron Calendar", url: "https://calendar.neuron-p2p.ru", icon: "fa-calendar-alt", desc: "Умный планировщик.", tags: ["календарь", "планы", "время", "дата", "calendar"] },
+        { name: "Neuron Study", url: "https://study.neuron-p2p.ru", icon: "fa-graduation-cap", desc: "Приложение для учебы.", tags: ["учеба", "школа", "урок", "расписание", "study", "learn"] },
+        { name: "Neuron Budget", url: "https://budget.neuron-p2p.ru", icon: "fa-wallet", desc: "Трекер финансов.", tags: ["бюджет", "деньги", "финансы", "кошелек", "траты", "счет", "budget", "money"] },
+        { name: "Neuron Game Hub", url: "https://game-hub.neuron-p2p.ru", icon: "fa-gamepad", desc: "Коллекция игр.", tags: ["игры", "гейм", "развлечения", "играть", "game", "play"] },
+        { name: "Password Generator", url: "https://password-generator.neuron-p2p.ru", icon: "fa-key", desc: "Надежные пароли.", tags: ["пароль", "ключ", "генератор", "безопасность", "password", "gen"] },
+        { name: "Neuron Synapse", url: "https://synapse.neuron-p2p.ru", icon: "fa-lock", desc: "P2P чат шифрованный.", tags: ["чат", "мессенджер", "синапс", "связь", "общение", "messenger", "chat"] },
+        { name: "Neuron Link", url: "https://link.neuron-p2p.ru", icon: "fa-shield-alt", desc: "Анонимайзер ссылок.", tags: ["линк", "ссылка", "аноним", "переход", "безопасность", "link", "hide"] },
+        { name: "What If", url: "https://ifwhat.ru", icon: "fa-question-circle", desc: "Миры альтернатив.", tags: ["что если", "история", "реальность", "сценарии", "if", "what"] },
+        { name: "Донат", url: "https://yoomoney.ru/to/4100119394883694", icon: "fa-heart", desc: "Поддержать проект.", tags: ["донат", "поддержать", "пожертвование", "деньги", "donate", "помощь"] }
     ];
 
-    // --- ОТРИСОВКА ГЛАВНОЙ СЕТКИ ---
+    // Отрисовка
     const grid = document.getElementById('main-grid');
     services.forEach(s => {
-        grid.innerHTML += `
-            <a href="${s.url}" class="node-card" target="_blank">
-                <div class="node-icon"><i class="fas ${s.icon}"></i></div>
-                <h3 class="node-title">${s.name}</h3>
-                <p class="node-desc">${s.desc}</p>
-                ${s.name === 'Neuron Status' ? '<div class="status-indicator"><div class="pulse-dot"></div> Operational</div>' : ''}
-            </a>`;
+        if(s.name !== "Донат") {
+            grid.innerHTML += `
+                <a href="${s.url}" class="node-card" ${s.url.startsWith('http') ? 'target="_blank"' : ''}>
+                    <div class="node-icon"><i class="fas ${s.icon}"></i></div>
+                    <h3 class="node-title">${s.name}</h3>
+                    <p class="node-desc">${s.desc}</p>
+                    ${s.name === 'Neuron Status' ? '<div class="status-tag"><div class="pulse-dot"></div> Operational</div>' : ''}
+                </a>`;
+        }
     });
 
-    // --- ЛОГИКА ПОИСКА С ПОДСКАЗКАМИ ---
-    const searchInput = document.getElementById('search-input');
-    const suggestions = document.getElementById('suggestions');
+    function toggleDonate() {
+        const m = document.getElementById('donate-modal');
+        m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
+    }
 
-    searchInput.addEventListener('input', () => {
-        const val = searchInput.value.toLowerCase();
-        suggestions.innerHTML = '';
-        if (!val) return;
-
-        const filtered = services.filter(s => 
-            s.name.toLowerCase().includes(val) || 
-            s.tags.some(tag => tag.includes(val))
-        );
-
-        filtered.forEach(s => {
-            const div = document.createElement('div');
-            div.className = 'suggestion-item';
-            div.innerHTML = `<i class="fas ${s.icon}"></i> <span>${s.name}</span>`;
-            div.onclick = () => window.open(s.url, '_blank');
-            suggestions.appendChild(div);
-        });
-    });
+    function copyEmail() {
+        navigator.clipboard.writeText('wertq6306@gmail.com');
+        const t = document.getElementById('toast');
+        t.style.display = 'block';
+        setTimeout(() => t.style.display = 'none', 2000);
+    }
 
     function toggleSearch() {
         const modal = document.getElementById('search-modal');
         modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
-        if (modal.style.display === 'flex') {
-            searchInput.value = '';
-            suggestions.innerHTML = '';
-            setTimeout(() => searchInput.focus(), 10);
-        }
+        if (modal.style.display === 'flex') document.getElementById('search-input').focus();
     }
 
-    window.addEventListener('keydown', e => {
-        if (e.ctrlKey && e.key === 'k') { e.preventDefault(); toggleSearch(); }
-        if (e.key === 'Escape') document.getElementById('search-modal').style.display = 'none';
+    const sInput = document.getElementById('search-input');
+    const sBox = document.getElementById('suggestions');
+
+    sInput.addEventListener('input', () => {
+        const v = sInput.value.toLowerCase();
+        sBox.innerHTML = '';
+        if(!v) return;
+        services.filter(s => s.name.toLowerCase().includes(v) || s.tags.some(t => t.includes(v)))
+            .forEach(s => {
+                const d = document.createElement('div');
+                d.className = 's-item';
+                d.innerHTML = `<i class="fas ${s.icon}"></i> ${s.name}`;
+                d.onclick = () => window.open(s.url, s.url.startsWith('http') ? '_blank' : '_self');
+                sBox.appendChild(d);
+            });
     });
 
-    // --- ПРОДВИНУТЫЙ ГОЛОСОВОЙ ПОИСК ---
-    const micBtn = document.getElementById('mic-btn');
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.lang = 'ru-RU';
-    recognition.interimResults = false;
-
-    function toggleVoice() {
-        try { recognition.start(); } catch(e) { recognition.stop(); }
-    }
-
-    recognition.onstart = () => micBtn.classList.add('active');
-    recognition.onend = () => micBtn.classList.remove('active');
-
+    function toggleVoice() { try { recognition.start(); } catch(e) {} }
+    recognition.onstart = () => document.getElementById('mic-btn').classList.add('active');
+    recognition.onend = () => document.getElementById('mic-btn').classList.remove('active');
     recognition.onresult = (e) => {
         const speech = e.results[0][0].transcript.toLowerCase();
-        console.log("Распознано:", speech);
-
-        // Поиск совпадений по тегам в базе данных
-        const matchedService = services.find(s => 
-            speech.includes(s.name.toLowerCase()) || 
-            s.tags.some(tag => speech.includes(tag))
-        );
-
-        if (matchedService) {
-            window.open(matchedService.url, '_blank');
-        } else {
-            alert("Команда не распознана. Попробуйте назвать сервис по-другому.");
-        }
+        const found = services.find(s => speech.includes(s.name.toLowerCase()) || s.tags.some(t => speech.includes(t)));
+        if(found) window.open(found.url, found.url.startsWith('http') ? '_blank' : '_self');
     };
 
-    // --- CANVAS BACKGROUND (Neural Mesh) ---
+    // Canvas Background
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     let pts = [];
     function res() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-    window.addEventListener('resize', res); res();
-    for(let i=0; i<80; i++) pts.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, vx:(Math.random()-0.5)*0.5, vy:(Math.random()-0.5)*0.5});
+    res(); window.addEventListener('resize', res);
+    for(let i=0; i<70; i++) pts.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, vx:(Math.random()-0.5)*0.4, vy:(Math.random()-0.5)*0.4});
     function anim() {
         ctx.clearRect(0,0,canvas.width,canvas.height);
         pts.forEach((p,i) => {
             p.x+=p.vx; p.y+=p.vy;
             if(p.x<0||p.x>canvas.width) p.vx*=-1; if(p.y<0||p.y>canvas.height) p.vy*=-1;
-            ctx.fillStyle = 'rgba(255,140,0,0.3)'; ctx.beginPath(); ctx.arc(p.x,p.y,1.5,0,Math.PI*2); ctx.fill();
+            ctx.fillStyle = 'rgba(255,140,0,0.2)'; ctx.beginPath(); ctx.arc(p.x,p.y,1.2,0,Math.PI*2); ctx.fill();
             for(let j=i+1; j<pts.length; j++) {
                 const d = Math.hypot(p.x-pts[j].x, p.y-pts[j].y);
-                if(d<150) { ctx.strokeStyle=`rgba(255,140,0,${0.2*(1-d/150)})`; ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(pts[j].x,pts[j].y); ctx.stroke(); }
+                if(d<160) { ctx.strokeStyle=`rgba(255,140,0,${0.12*(1-d/160)})`; ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(pts[j].x,pts[j].y); ctx.stroke(); }
             }
         });
         requestAnimationFrame(anim);
     }
     anim();
 </script>
-
 </body>
 </html>
