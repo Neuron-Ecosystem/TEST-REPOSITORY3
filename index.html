@@ -20,7 +20,7 @@
         body { 
             background: var(--bg); 
             color: var(--text); 
-            font-family: 'Segoe UI', sans-serif; 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
             overflow-x: hidden; 
             min-height: 100vh;
         }
@@ -28,18 +28,20 @@
         #canvas { position: fixed; top: 0; left: 0; z-index: -1; }
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 
-        /* --- АНИМАЦИИ --- */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); filter: blur(10px); }
-            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        /* --- ПРАВИЛЬНЫЕ АНИМАЦИИ --- */
+        @keyframes cardSpawn {
+            0% { opacity: 0; transform: translateY(50px) scale(0.9); filter: blur(10px); }
+            100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
         }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-15px); }
+
+        @keyframes menuSlide {
+            from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes pulse {
+
+        @keyframes pulseDonate {
             0% { box-shadow: 0 0 0 0 rgba(255, 140, 0, 0.4); }
-            70% { box-shadow: 0 0 0 12px rgba(255, 140, 0, 0); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 140, 0, 0); }
             100% { box-shadow: 0 0 0 0 rgba(255, 140, 0, 0); }
         }
 
@@ -48,18 +50,19 @@
             display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;
             backdrop-filter: blur(25px); padding: 20px 30px; border-radius: 24px;
             border: 1px solid var(--glass-border); background: var(--glass);
-            animation: slideDown 0.8s ease; position: relative; z-index: 2000;
+            position: relative; z-index: 5000; /* Самый высокий приоритет */
         }
 
-        .logo-box { display: flex; align-items: center; gap: 12px; color: var(--accent); font-weight: 800; letter-spacing: 4px; text-transform: uppercase; }
+        .logo-box { display: flex; align-items: center; gap: 15px; color: var(--accent); }
+        .logo-text { font-size: 1.5rem; font-weight: 800; letter-spacing: 5px; text-transform: uppercase; }
 
         .nav-actions { display: flex; gap: 15px; align-items: center; }
 
-        /* --- УВЕДОМЛЕНИЯ --- */
+        /* --- УВЕДОМЛЕНИЯ (ФИКС ДЛЯ МОБИЛОК) --- */
         .notification-container { position: relative; }
         .notification-bell {
             background: none; border: none; color: var(--text-dim);
-            font-size: 1.4rem; cursor: pointer; transition: 0.3s; padding: 5px;
+            font-size: 1.5rem; cursor: pointer; transition: 0.3s; padding: 5px;
         }
         .bell-dot {
             position: absolute; top: 5px; right: 5px; width: 10px; height: 10px;
@@ -67,71 +70,100 @@
         }
 
         .news-dropdown {
-            position: absolute; top: calc(100% + 15px); right: 0; width: 320px;
-            background: #0a0b14; border: 1px solid var(--accent); border-radius: 20px;
-            backdrop-filter: blur(30px); display: none; flex-direction: column; z-index: 9999;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.9); overflow: hidden;
+            position: absolute; 
+            top: calc(100% + 15px); 
+            right: 0; 
+            width: 320px;
+            background: #0a0b14; 
+            border: 1px solid var(--accent); 
+            border-radius: 20px;
+            backdrop-filter: blur(30px); 
+            display: none; 
+            flex-direction: column; 
+            z-index: 10000; /* Выше всех карточек */
+            box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+            overflow: hidden;
         }
-        .news-dropdown.show { display: flex; animation: slideDown 0.3s ease forwards; }
+        .news-dropdown.show { display: flex; animation: menuSlide 0.3s ease-out forwards; }
 
-        /* --- КНОПКИ --- */
-        .btn-donate {
-            background: var(--accent); color: #000; border: none; padding: 12px 24px; 
-            border-radius: 14px; font-weight: 800; cursor: pointer; transition: 0.3s;
-            animation: pulse 2s infinite;
+        /* --- КАРТОЧКИ СЕРВИСОВ --- */
+        .services-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 25px; 
+            margin-bottom: 60px;
         }
-
-        .search-trigger { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; cursor: pointer; color: var(--text-dim); }
-
-        /* --- СЕТКА СЕРВИСОВ --- */
-        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 50px; }
 
         .node-card {
-            background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--glass-border);
-            border-radius: 28px; padding: 30px; text-decoration: none; color: inherit;
+            background: var(--glass); 
+            backdrop-filter: blur(20px); 
+            border: 1px solid var(--glass-border);
+            border-radius: 30px; 
+            padding: 35px; 
+            text-decoration: none; 
+            color: inherit;
+            display: flex; 
+            flex-direction: column;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            opacity: 0; animation: fadeInUp 0.6s ease forwards;
+            opacity: 0; 
+            animation: cardSpawn 0.8s cubic-bezier(0.2, 1, 0.3, 1) forwards;
         }
-        .node-card:hover { border-color: var(--accent); transform: translateY(-12px); background: rgba(255,255,255,0.05); }
-        .node-icon { font-size: 2.2rem; color: var(--accent); margin-bottom: 15px; }
-        .node-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
-        .node-desc { font-size: 0.9rem; color: var(--text-dim); line-height: 1.5; }
 
-        /* --- НИЖНИЙ ВИДЖЕТ --- */
+        .node-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-15px) scale(1.02);
+            background: rgba(255, 140, 0, 0.04);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4), 0 0 20px var(--accent-glow);
+        }
+
+        .node-icon { font-size: 2.5rem; color: var(--accent); margin-bottom: 20px; transition: 0.4s; }
+        .node-card:hover .node-icon { transform: rotate(10deg) scale(1.1); }
+        .node-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 12px; }
+        .node-desc { font-size: 0.95rem; color: var(--text-dim); line-height: 1.6; }
+
+        /* --- FOOTER & WIDGET --- */
         .news-widget {
             background: var(--glass); border: 1px solid var(--glass-border);
-            border-radius: 28px; padding: 25px; margin-bottom: 60px;
-            animation: fadeInUp 0.8s ease forwards; animation-delay: 0.4s;
+            border-radius: 28px; padding: 30px; margin-bottom: 60px;
+            animation: cardSpawn 1s ease forwards; animation-delay: 0.5s;
         }
-        .news-widget-item { display: flex; gap: 15px; padding: 12px; border-radius: 15px; background: rgba(0,0,0,0.2); margin-bottom: 10px; }
 
-        /* --- FOOTER --- */
-        .footer { text-align: center; padding: 50px; border-top: 1px solid var(--glass-border); background: var(--glass); border-radius: 40px 40px 0 0; }
-        .social-link { font-size: 1.8rem; margin: 0 12px; color: var(--text-dim); transition: 0.3s; }
+        .footer { 
+            text-align: center; padding: 60px 20px; border-top: 1px solid var(--glass-border);
+            background: rgba(0,0,0,0.2); border-radius: 50px 50px 0 0;
+        }
+        .social-link { font-size: 2rem; margin: 0 15px; color: var(--text-dim); transition: 0.4s; }
         .social-link:hover { color: var(--accent); transform: translateY(-5px); }
 
-        /* МИКРОФОН */
-        .mic-btn {
-            position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px;
-            background: var(--accent); border-radius: 50%; display: flex;
-            justify-content: center; align-items: center; cursor: pointer;
-            z-index: 5000; box-shadow: 0 10px 30px var(--accent-glow);
+        /* КНОПКА ДОНАТА */
+        .btn-donate {
+            background: var(--accent); color: #000; border: none; padding: 12px 25px; 
+            border-radius: 15px; font-weight: 800; cursor: pointer; transition: 0.3s;
+            animation: pulseDonate 2s infinite;
         }
 
-        /* МОБИЛЬНАЯ АДАПТАЦИЯ */
+        .mic-btn {
+            position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px;
+            background: var(--accent); border-radius: 50%; display: flex;
+            justify-content: center; align-items: center; cursor: pointer;
+            z-index: 9999; box-shadow: 0 10px 30px var(--accent-glow);
+        }
+
+        /* --- МОБИЛЬНАЯ АДАПТАЦИЯ (ФИНАЛЬНЫЙ ФИКС) --- */
         @media (max-width: 768px) {
-            .header-ui { padding: 15px 20px; }
-            .logo-text { font-size: 1.2rem; letter-spacing: 2px; }
-            .btn-donate { padding: 10px 15px; font-size: 0.8rem; }
+            .header-ui { padding: 15px 20px; border-radius: 15px; }
+            .logo-text { font-size: 1.2rem; }
             
             .news-dropdown {
-                position: absolute;
-                top: 60px;
-                right: -10px; /* Выравнивание под колокольчик */
-                width: calc(100vw - 40px);
-                max-width: 340px;
+                position: fixed; /* На мобилках фиксируем относительно экрана */
+                top: 85px; 
+                right: 15px; 
+                left: 15px; /* Растягиваем по центру экрана с отступами */
+                width: auto;
+                max-width: none;
             }
-            .news-widget-item { flex-direction: column; gap: 5px; }
+
+            .services-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -143,7 +175,7 @@
     <header class="header-ui">
         <div class="logo-box"><i class="fas fa-brain"></i> <span class="logo-text">Neuron</span></div>
         <div class="nav-actions">
-            <div class="search-trigger" onclick="toggleSearch()"><i class="fas fa-search"></i></div>
+            <div class="search-trigger" onclick="toggleSearch()" style="cursor:pointer; color:var(--text-dim)"><i class="fas fa-search"></i></div>
             <div class="notification-container">
                 <button class="notification-bell" onclick="toggleNewsDropdown()">
                     <i class="fas fa-bell"></i>
@@ -160,9 +192,7 @@
     <div class="services-grid" id="main-grid"></div>
 
     <div class="news-widget">
-        <div style="color:var(--accent); font-weight:800; margin-bottom:15px; font-size:0.9rem;">
-            <i class="fas fa-rss"></i> ПОСЛЕДНИЕ ОБНОВЛЕНИЯ
-        </div>
+        <h3 style="color:var(--accent); margin-bottom:20px; font-size:1rem; letter-spacing:2px">ПОСЛЕДНИЕ СОБЫТИЯ</h3>
         <div id="news-widget-list"></div>
     </div>
 
@@ -171,20 +201,19 @@
             <a href="https://t.me/neuron_ecosystem" target="_blank" class="social-link"><i class="fab fa-telegram"></i></a>
             <a href="https://vk.com/club233118101" target="_blank" class="social-link"><i class="fab fa-vk"></i></a>
             <a href="https://www.tiktok.com/@neuron_eco" target="_blank" class="social-link"><i class="fab fa-tiktok"></i></a>
-            <span class="social-link" onclick="copyEmail()" style="cursor:pointer"><i class="fas fa-envelope"></i></span>
         </div>
-        <p style="margin-top:25px; opacity:0.3; letter-spacing:2px; font-size:0.8rem;">NEURON ECOSYSTEM &copy; 2026</p>
+        <p style="margin-top:25px; opacity:0.3; letter-spacing:3px; font-size:0.8rem">NEURON ECOSYSTEM © 2026</p>
     </footer>
 </div>
 
-<div id="search-modal" onclick="toggleSearch()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:10000; justify-content:center; padding-top:15vh;">
+<div id="search-modal" onclick="toggleSearch()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:20000; justify-content:center; padding-top:10vh;">
     <div class="search-container" onclick="event.stopPropagation()" style="width:90%; max-width:600px">
-        <input type="text" id="search-input" placeholder="Поиск сервиса..." style="width:100%; background:none; border:2px solid var(--accent); color:#fff; padding:15px; border-radius:15px; outline:none; font-size:1.2rem;">
+        <input type="text" id="search-input" placeholder="Поиск сервиса..." style="width:100%; background:rgba(255,255,255,0.05); border:2px solid var(--accent); color:#fff; padding:20px; border-radius:20px; font-size:1.4rem; outline:none;">
         <div id="suggestions" style="margin-top:20px;"></div>
     </div>
 </div>
 
-<div class="mic-btn" id="mic-btn" onclick="toggleVoice()"><i class="fas fa-microphone" style="color:#000; font-size:1.4rem"></i></div>
+<div class="mic-btn" id="mic-btn" onclick="toggleVoice()"><i class="fas fa-microphone" style="color:#000; font-size:1.6rem"></i></div>
 
 <script>
     const services = [
@@ -206,14 +235,13 @@
     ];
 
     const ALL_NEWS = [
-        { id: 2, date: "20.01.26", text: "Исправлена мобильная адаптация и открытие уведомлений под колокольчиком." },
-        { id: 1, date: "20.01.26", text: "Анимации появления карточек полностью восстановлены." }
+        { id: 1, date: "20.01.2026", text: "Дизайн-система обновлена: восстановлены анимации и мобильный отклик." }
     ];
 
     function init() {
-        const grid = document.getElementById('main-grid');
-        grid.innerHTML = services.map((s, i) => `
-            <a href="${s.url}" class="node-card" style="--i: ${i}; animation-delay: ${i * 0.1}s" target="_blank">
+        // Рендер с анимационной задержкой
+        document.getElementById('main-grid').innerHTML = services.map((s, i) => `
+            <a href="${s.url}" class="node-card" style="animation-delay: ${i * 0.15}s" target="_blank">
                 <i class="fas ${s.icon} node-icon"></i>
                 <h3 class="node-title">${s.name}</h3>
                 <p class="node-desc">${s.desc}</p>
@@ -222,19 +250,21 @@
 
         document.getElementById('news-list').innerHTML = ALL_NEWS.map(n => `
             <div style="padding:15px; border-bottom:1px solid rgba(255,255,255,0.05)">
-                <small style="color:var(--accent)">${n.date}</small>
-                <p style="font-size:0.85rem; margin-top:4px;">${n.text}</p>
+                <small style="color:var(--accent); font-weight:bold">${n.date}</small>
+                <p style="font-size:0.9rem; margin-top:5px; color:var(--text-dim)">${n.text}</p>
             </div>
         `).join('');
 
         document.getElementById('news-widget-list').innerHTML = ALL_NEWS.map(n => `
-            <div class="news-widget-item">
-                <span style="color:var(--accent); font-weight:bold; min-width:80px; font-size:0.8rem;">${n.date}</span>
-                <span style="font-size:0.9rem;">${n.text}</span>
+            <div style="padding:15px; background:rgba(255,255,255,0.02); border-radius:15px; margin-bottom:10px; display:flex; gap:20px">
+                <span style="color:var(--accent); font-family:monospace">${n.date}</span>
+                <span>${n.text}</span>
             </div>
         `).join('');
 
-        if (ALL_NEWS[0].id > (localStorage.getItem('last_id') || 0)) document.getElementById('bell-dot').style.display = 'block';
+        if (ALL_NEWS[0].id > (localStorage.getItem('neuron_last_news') || 0)) {
+            document.getElementById('bell-dot').style.display = 'block';
+        }
     }
 
     function toggleNewsDropdown() {
@@ -242,7 +272,7 @@
         d.classList.toggle('show');
         if(d.classList.contains('show')) {
             document.getElementById('bell-dot').style.display = 'none';
-            localStorage.setItem('last_id', ALL_NEWS[0].id);
+            localStorage.setItem('neuron_last_news', ALL_NEWS[0].id);
         }
     }
 
@@ -252,23 +282,6 @@
         if(m.style.display === 'flex') document.getElementById('search-input').focus();
     }
 
-    document.getElementById('search-input').addEventListener('input', (e) => {
-        const val = e.target.value.toLowerCase();
-        const res = document.getElementById('suggestions');
-        res.innerHTML = '';
-        if(!val) return;
-        services.filter(s => s.name.toLowerCase().includes(val) || s.tags.some(t => t.includes(val))).forEach(s => {
-            const div = document.createElement('div');
-            div.style.padding = '15px'; div.style.background = 'rgba(255,255,255,0.05)'; div.style.cursor = 'pointer'; div.style.marginBottom = '5px'; div.style.borderRadius = '10px';
-            div.innerHTML = `<i class="fas ${s.icon}" style="color:var(--accent); margin-right:15px"></i> ${s.name}`;
-            div.onclick = () => window.open(s.url, '_blank');
-            res.appendChild(div);
-        });
-    });
-
-    function toggleDonate() { window.open('https://yoomoney.ru/to/4100119394883694', '_blank'); }
-    function copyEmail() { navigator.clipboard.writeText('wertq6306@gmail.com'); alert('Email скопирован!'); }
-
     // Голос
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.lang = 'ru-RU';
@@ -277,9 +290,11 @@
     recognition.onend = () => document.getElementById('mic-btn').style.background = 'var(--accent)';
     recognition.onresult = (e) => {
         const query = e.results[0][0].transcript.toLowerCase();
-        const s = services.find(x => query.includes(x.name.toLowerCase()) || x.tags.some(t => query.includes(t)));
+        const s = services.find(x => query.includes(x.name.toLowerCase()));
         if(s) window.open(s.url, '_blank');
     };
+
+    function toggleDonate() { window.open('https://yoomoney.ru/to/4100119394883694', '_blank'); }
 
     // Фон
     const canvas = document.getElementById('canvas');
@@ -288,13 +303,16 @@
     window.onresize = resize; resize();
     function draw() {
         ctx.clearRect(0,0,canvas.width,canvas.height);
-        ctx.fillStyle = 'rgba(255,140,0,0.15)';
-        for(let i=0; i<40; i++) { ctx.beginPath(); ctx.arc(Math.random()*canvas.width, Math.random()*canvas.height, 1, 0, Math.PI*2); ctx.fill(); }
+        ctx.fillStyle = 'rgba(255,140,0,0.1)';
+        for(let i=0; i<30; i++) {
+            ctx.beginPath(); ctx.arc(Math.random()*canvas.width, Math.random()*canvas.height, 1, 0, Math.PI*2); ctx.fill();
+        }
         requestAnimationFrame(draw);
     }
     draw();
     init();
 
+    // Клик мимо колокольчика
     window.onclick = (e) => {
         if (!e.target.closest('.notification-container')) document.getElementById('news-dropdown').classList.remove('show');
     };
